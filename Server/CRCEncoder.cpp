@@ -39,33 +39,77 @@ public://change to private
 			result = "";
 			}
 			*/
-		//bitset<16> num1("010101010010010j110");
+		//bitset<16> num1("010101010010010110");
 		//bitset<3> num2("100");
-		string num1 = "10101010010010110";
+		//string num1 = "10101010010010110";
+		string num1 = "10001";
 		string num2 = "1001";
 		//bitset<4> result;
 		string result = "";
 
-
-		for (int i = 0; i <= num1.length() - num2.length(); i++)
+		string current;
+		string next;
+		//for (int i = 0; i <= num1.length() - num2.length(); i++)
+		int i = 0;
+		while ((num1.length() >= num2.length()))
 		{
-			cout << num1.substr(i, num2.length()) << endl;
-			//for (int i = 0; i < num2.length(); i++)
-			//{
-			//	//cout << "char " << ((int)(num1[i] - 48)) << endl;
 
-			//	//result[i] = char(((int)(num1[i] - 48)) ^ ((int)(num2[i] - 48)));
+			result.clear();//reset at beginning to save value
 
-			//	//cout << result[i] << endl;
+			current = num1.substr(0, num2.length());
 
-			//	if ((num1[i] == '1' && num2[i] == '1') || (num1[i] == '0'&& num2[i] == '0'))
-			//		result += '0';
-			//	else
-			//		result += '1';
-			//}
+			if (current[0] == '0')
+				continue;
 
-			//cout << result << endl;
+			cout << "current dividend: " << current << endl;
+
+			//result.clear();
+			for (int j = 0; j < num2.length(); j++)
+			{
+				//cout << "char " << ((int)(num1[i] - 48)) << endl;
+
+				//result[i] = char(((int)(num1[i] - 48)) ^ ((int)(num2[i] - 48)));
+
+				//cout << result[i] << endl;
+
+				if ((current[j] == '1' && num2[j] == '1') || (current[j] == '0'&& num2[j] == '0'))
+					result += '0';
+				else
+					result += '1';
+			}
+
+			next = result + num1.substr(0 + num2.size());//size or length?
+			i++;
+
+			cout << "result: " << result << endl;
+
+			for (int k = 0; k < next.length(); k++)
+			{
+				if (next[k] == '1')
+				{
+					next = next.substr(k);
+					break;
+				}
+			}
+			cout << "current now: " << next << endl;
+
+			num1 = next;
+
+
+			if (num1.length() < num2.length())
+			{
+				result = num1;
+				break;
+
+			}
+			if (stoi(num1) == 0)
+			{
+				result = "0";
+				break;
+			}
 		}
+
+		cout << "final result: " << result << endl;
 
 
 		/*   ALGORITHM
