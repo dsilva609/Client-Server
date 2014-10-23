@@ -12,7 +12,7 @@ public://change to private
 
 	void Calculate(string messege)
 	{
-		messege = "1101010000000000000000";
+		messege = "1101010000000010111110";
 		//messege = "1001";
 		/*bitset<8> msg(messege);
 		bitset<16> poly(CRCANSI);
@@ -42,8 +42,8 @@ public://change to private
 		//bitset<16> num1("010101010010010110");
 		//bitset<3> num2("100");
 		//string num1 = "10101010010010110";
-		string num1 = "10001";
-		string num2 = "1001";
+		string num1 = "1101010000000010111110";
+		string num2 = "11000000000000101";
 		//bitset<4> result;
 		string result = "";
 
@@ -102,7 +102,8 @@ public://change to private
 				break;
 
 			}
-			if (stoi(num1) == 0)
+
+			if (bitset <64>(num1).to_ulong() == 0)
 			{
 				result = "0";
 				break;
