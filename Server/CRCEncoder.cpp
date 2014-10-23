@@ -43,20 +43,32 @@ public://change to private
 		//bitset<3> num2("100");
 		string num1 = "10101010010010110";
 		string num2 = "1001";
-		bitset<4> result;
-		//string result = "  ";
-		for (int i = 0; i < num2.length(); i++)
+		//bitset<4> result;
+		string result = "";
+
+
+		for (int i = 0; i <= num1.length() - num2.length(); i++)
 		{
-			cout << "char " << ((int)(num1[i] - 48)) << endl;
+			cout << num1.substr(i, num2.length()) << endl;
+			//for (int i = 0; i < num2.length(); i++)
+			//{
+			//	//cout << "char " << ((int)(num1[i] - 48)) << endl;
 
-			result[i] = char(((int)(num1[i] - 48)) ^ ((int)(num2[i] - 48)));
+			//	//result[i] = char(((int)(num1[i] - 48)) ^ ((int)(num2[i] - 48)));
 
-			cout << result[i] << endl;
+			//	//cout << result[i] << endl;
+
+			//	if ((num1[i] == '1' && num2[i] == '1') || (num1[i] == '0'&& num2[i] == '0'))
+			//		result += '0';
+			//	else
+			//		result += '1';
+			//}
+
+			//cout << result << endl;
 		}
 
-		cout << result << endl;
 
-		/*
+		/*   ALGORITHM
 		while length of divisor < number
 
 		xor by divisor
