@@ -55,5 +55,16 @@ public://change to private
 		}
 
 		cout << result << endl;
+
+		/*
+		while length of divisor < number
+
+		xor by divisor
+
+		shift to right by 1
+		if length is less than divisor starting with first 1
+		shift to right again
+
+		*/
 	}
 };
