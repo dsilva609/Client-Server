@@ -1,5 +1,6 @@
 #include <iostream>
 #include <bitset>
+#include <string>
 
 using namespace std;
 
@@ -38,11 +39,21 @@ public://change to private
 			result = "";
 			}
 			*/
-		bitset <16> num1("010101010010010110");
-		bitset <16> num2("100");
-		bitset <16> result;
-		num1 ^= num2;
-		cout << num1;// << endl;
-	}
+		//bitset<16> num1("010101010010010j110");
+		//bitset<3> num2("100");
+		string num1 = "10101010010010110";
+		string num2 = "1001";
+		bitset<4> result;
+		//string result = "  ";
+		for (int i = 0; i < num2.length(); i++)
+		{
+			cout << "char " << ((int)(num1[i] - 48)) << endl;
 
+			result[i] = char(((int)(num1[i] - 48)) ^ ((int)(num2[i] - 48)));
+
+			cout << result[i] << endl;
+		}
+
+		cout << result << endl;
+	}
 };
