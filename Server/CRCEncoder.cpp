@@ -6,82 +6,79 @@ using namespace std;
 
 #define CRCANSI "11000000000000101"
 
+
 class CRCEncoder
 {
-public://change to private
-
-	void Calculate(string messege)
+public:
+	string Encode(string message)
 	{
-		messege = "1101010000000010111110";
-		//messege = "1001";
-		/*bitset<8> msg(messege);
-		bitset<16> poly(CRCANSI);
+		string hash;
+		string encodedMessage;
+		int size;
 
-		int result;
+		encodedMessage = message;
+		message += this->_padding;
+		hash = Calculate(message);
+		size = 16 - hash.length();
 
-		result = msg.to_ulong() % poly.to_ulong();
+		for (int i = 0; i < size; i++)
+			hash = "0" + hash;
 
-		cout << msg.to_ulong() << endl;
-		cout << poly.to_ulong() << endl;
-		cout << result << endl;*/
+		encodedMessage += hash;
 
-		/*	int num1[] = { 1, 0, 1, 0, 1, 0, 1, 1, 0 };
-			int num2[] = { 1, 0, 0 };
-			string result = "";
+		return encodedMessage;
+	}
 
-			for (int c = 0; c < 8; c++)
-			{
-			for (int i = 0; i < 3; i++)
-			{
-			result += to_string(num1[i] ^ num2[i]);
-			}
-			cout << result << endl;
-			result = "";
-			}
-			*/
-		//bitset<16> num1("010101010010010110");
-		//bitset<3> num2("100");
-		//string num1 = "10101010010010110";
-		string num1 = "1101010000000010111110";
-		string num2 = "11000000000000101";
-		//bitset<4> result;
+	string Decode(string message)
+	{
+		string decodedMessage;
+		string result;
+
+		result = Calculate(message);
+
+		if (bitset<8>(result) == 0)
+			decodedMessage = message.substr(0, message.length() - 16);
+		else
+			cerr << "CRC check failure!" << endl;
+
+		return decodedMessage;
+	}
+
+private:
+	string _padding = "0000000000000000";
+	string _divisor = CRCANSI;
+
+	string Calculate(string message)
+	{
 		string result = "";
 
 		string current;
 		string next;
-		//for (int i = 0; i <= num1.length() - num2.length(); i++)
+
 		int i = 0;
-		while ((num1.length() >= num2.length()))
+		while ((message.length() >= this->_divisor.length()))
 		{
+			result.clear();
 
-			result.clear();//reset at beginning to save value
-
-			current = num1.substr(0, num2.length());
+			current = message.substr(0, this->_divisor.length());
 
 			if (current[0] == '0')
 				continue;
 
-			cout << "current dividend: " << current << endl;
+			//cout << "current dividend: " << current << endl;
 
-			//result.clear();
-			for (int j = 0; j < num2.length(); j++)
+
+			for (int j = 0; j < this->_divisor.length(); j++)
 			{
-				//cout << "char " << ((int)(num1[i] - 48)) << endl;
-
-				//result[i] = char(((int)(num1[i] - 48)) ^ ((int)(num2[i] - 48)));
-
-				//cout << result[i] << endl;
-
-				if ((current[j] == '1' && num2[j] == '1') || (current[j] == '0'&& num2[j] == '0'))
+				if ((current[j] == '1' && this->_divisor[j] == '1') || (current[j] == '0'&& this->_divisor[j] == '0'))
 					result += '0';
 				else
 					result += '1';
 			}
 
-			next = result + num1.substr(0 + num2.size());//size or length?
-			i++;
+			next = result + message.substr(this->_divisor.size());
 
-			cout << "result: " << result << endl;
+			//	cout << "result: " << result << endl;
 
 			for (int k = 0; k < next.length(); k++)
 			{
@@ -91,28 +88,28 @@ public://change to private
 					break;
 				}
 			}
-			cout << "current now: " << next << endl;
+			//	cout << "current now: " << next << endl;
 
-			num1 = next;
+			message = next;
 
 
-			if (num1.length() < num2.length())
+			if (message.length() < this->_divisor.length())
 			{
-				result = num1;
+				result = message;
 				break;
 
 			}
 
-			if (bitset <64>(num1).to_ulong() == 0)
+			if (bitset <64>(message).to_ulong() == 0)
 			{
 				result = "0";
 				break;
 			}
 		}
 
-		cout << "final result: " << result << endl;
+		//cout << "final result: " << result << endl;
 
-
+		return result;
 		/*   ALGORITHM
 		while length of divisor < number
 

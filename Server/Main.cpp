@@ -16,8 +16,9 @@ int main()
 
 
 	CRCEncoder encoder;
+	string msg = encoder.Encode("110101");
 
-	encoder.Calculate("");
+	cout << encoder.Decode(msg) << endl;
 
 
 	exit(EXIT_SUCCESS);
