@@ -10,7 +10,7 @@ using namespace std;
 class CRCEncoder
 {
 public:
-	string Encode(string message)
+	string EncodeCRC(string message)
 	{
 		string hash;
 		string encodedMessage;
@@ -29,7 +29,7 @@ public:
 		return encodedMessage;
 	}
 
-	string Decode(string message)
+	string DecodeCRC(string message)
 	{
 		string decodedMessage;
 		string result;

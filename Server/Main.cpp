@@ -25,5 +25,6 @@ int main()
 
 	cout << "encoded message: " << hamming.EncodeHamming("10011010") << endl;
 
+	cout << hamming.DecodeHamming(hamming.EncodeHamming("10011010")) << endl;
 	exit(EXIT_SUCCESS);
 }

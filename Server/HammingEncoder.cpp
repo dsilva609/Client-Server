@@ -8,16 +8,16 @@ class HammingEncoder
 public:
 	string EncodeHamming(string message)
 	{
-		return CalculateHamming(message);
+		return CalculateHamming(message, true);
 	}
 
 	string DecodeHamming(string message)
 	{
-		return "";
+		return CalculateHamming(message, false);
 	}
 
 private:
-	string CalculateHamming(string message)
+	string CalculateHamming(string message, bool encode)
 	{
 		int numPBits;
 		int numOnes = 0;
@@ -27,8 +27,11 @@ private:
 
 		numPBits = floor(log2(message.length())) + 1;
 
-		for (int i = 0; i < numPBits; i++)
-			message.insert(pow(2, i) - 1, "_");
+		if (encode)
+		{
+			for (int i = 0; i < numPBits; i++)
+				message.insert(pow(2, i) - 1, "_");
+		}
 
 		encodedMessage = message;
 
@@ -52,13 +55,28 @@ private:
 				}
 			}
 
-			encodedMessage[pow(2, counter) - 1] = determineParity(testStr);
+			if (encode)
+				encodedMessage[pow(2, counter) - 1] = determineParity(testStr);
+			else
+			{
+				if (encodedMessage[pow(2, counter) - 1] == determineParity(testStr.substr(1)))
+				{
+					cout << "check at " << pow(2, counter) - 1 << " successful" << endl;
+
+				}
+				else
+					cout << "check failure at: " << pow(2, counter) - 1 << endl;
+			}
 
 			testStr.clear();
 			counter++;
 		}
 
-		//cout << "encoded message: " << encodedMessage << endl;
+		if (!encode)
+		{
+			for (int i = numPBits - 1; i >= 0; i--)
+				encodedMessage.erase(pow(2, i) - 1, 1);
+		}
 
 		return encodedMessage;
 	}
@@ -77,7 +95,6 @@ private:
 			return '0';
 
 		return '1';
-
 	}
 
 	bool isOdd(int num)
