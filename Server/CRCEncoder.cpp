@@ -1,11 +1,10 @@
 #include <iostream>
 #include <bitset>
-//#include <string>
+#include <string>
 
 using namespace std;
 
 #define CRCANSI "11000000000000101"
-
 
 class CRCEncoder
 {
@@ -62,8 +61,11 @@ private:
 
 			current = message.substr(0, this->_divisor.length());
 
-			if (current[0] == '0')
+			if (current[i] == '0')
+			{
+				i++;
 				continue;
+			}
 
 			//cout << "current dividend: " << current << endl;
 
@@ -100,7 +102,7 @@ private:
 
 			}
 
-			if (bitset <64>(message).to_ulong() == 0)
+			if (BinaryToDecimal(message) == 0)
 			{
 				result = "0";
 				break;
@@ -120,5 +122,18 @@ private:
 		shift to right again
 
 		*/
+	}
+
+	int BinaryToDecimal(string binary)
+	{
+		int num = 0;
+
+		for (int i = binary.length(); i >= 0; i--)
+		{
+			if (binary[i] == '1')
+				num += pow(2, binary.length() - i);
+		}
+
+		return num;
 	}
 };

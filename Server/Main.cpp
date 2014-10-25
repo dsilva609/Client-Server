@@ -16,15 +16,14 @@ int main()
 	//server.Start("127.0.0.1", "daytime", data);
 
 
-	//	CRCEncoder encoder;
-	//	string msg = encoder.Encode("110101");
+	CRCEncoder encoder;
+	string msg = encoder.EncodeCRC("00010110000101100000010011110100111001010111001111110100");
+	cout << encoder.DecodeCRC(msg) << endl;
 
-	//	cout << encoder.Decode(msg) << endl;
+	//HammingEncoder hamming;
 
-	HammingEncoder hamming;
+	//cout << "encoded message: " << hamming.EncodeHamming("10011010") << endl;
 
-	cout << "encoded message: " << hamming.EncodeHamming("10011010") << endl;
-
-	cout << hamming.DecodeHamming(hamming.EncodeHamming("10011010")) << endl;
+	//cout << hamming.DecodeHamming(hamming.EncodeHamming("10011010")) << endl;
 	exit(EXIT_SUCCESS);
 }
