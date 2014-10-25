@@ -6,14 +6,12 @@ using namespace std;
 class HammingEncoder
 {
 public:
-	string Encode(string message)
+	string EncodeHamming(string message)
 	{
-		CalculateHamming(message);
-
-		return "";
+		return CalculateHamming(message);
 	}
 
-	string Decode(string message)
+	string DecodeHamming(string message)
 	{
 		return "";
 	}
@@ -24,24 +22,62 @@ private:
 		int numPBits;
 		int numOnes = 0;
 		string encodedMessage;
+		int counter = 0;
+		string testStr = "";
 
 		numPBits = floor(log2(message.length())) + 1;
-		cout << numPBits << endl;
 
-		for (int i = 1; i <= message.length(); i += 2)
+		for (int i = 0; i < numPBits; i++)
+			message.insert(pow(2, i) - 1, "_");
+
+		encodedMessage = message;
+
+
+		while (counter < numPBits)
 		{
-			if (message[i] == '1')
-				numOnes++;
+			//		cout << "counter is: " << counter << endl;
+			for (int i = pow(2, counter) - 1; i < encodedMessage.length(); i += pow(2, counter) * 2)
+			{
+				//	cout << "i is: " << i << endl;
+
+				if (i + pow(2, counter) > encodedMessage.length())
+				{
+					//cout << "checking: " << encodedMessage.substr(i) << endl;
+					testStr += encodedMessage.substr(i);
+				}
+				else
+				{
+					//	cout << "checking: " << encodedMessage.substr(i, pow(2, counter)) << endl;
+					testStr += encodedMessage.substr(i, pow(2, counter));
+				}
+			}
+
+			encodedMessage[pow(2, counter) - 1] = determineParity(testStr);
+
+			testStr.clear();
+			counter++;
 		}
 
-		if (isOdd(numOnes))
-			encodedMessage = "0" + message;
-		else
-			encodedMessage = "1" + message;
+		//cout << "encoded message: " << encodedMessage << endl;
 
-		cout << "message: " << encodedMessage << endl;
+		return encodedMessage;
+	}
 
-		return "";
+	char determineParity(string testStr)
+	{
+		int num = 0;
+
+		for (int i = 0; i < testStr.length(); i++)
+		{
+			if (testStr[i] == '1')
+				num++;
+		}
+
+		if (isOdd(num))
+			return '0';
+
+		return '1';
+
 	}
 
 	bool isOdd(int num)

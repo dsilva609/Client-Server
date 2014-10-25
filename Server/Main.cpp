@@ -23,7 +23,7 @@ int main()
 
 	HammingEncoder hamming;
 
-	hamming.Encode("10110100");
+	cout << "encoded message: " << hamming.EncodeHamming("10011010") << endl;
 
 	exit(EXIT_SUCCESS);
 }
