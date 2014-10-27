@@ -138,7 +138,7 @@ private:
 			//	cout << "hamm: " << this->_hammingEncoder.EncodeHamming(message.substr(i, 8)) << endl;
 			//	cout << "encoded hamming now: " << encodedHamming << endl;
 		}
-		cout << "encoded hamming now: " << encodedHamming << endl;
+		//	cout << "encoded hamming now: " << encodedHamming << endl;
 
 		return encodedHamming;
 	}
