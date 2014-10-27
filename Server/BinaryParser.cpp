@@ -110,22 +110,39 @@ private:
 			temp += ConvertToBinary(to_string(str.length()), false, true);//string is SYN SYN length
 			str = ConvertToBinary(str, true);//message string, do hamming encoding
 
-			//	cout << "str before hamming:" << endl << str << endl;
+			//cout << "str before hamming:" << endl << str << endl;
 
-			str = this->_hammingEncoder.EncodeHamming(str);
+			str = EncodeBytesToHamming(str);// this->_hammingEncoder.EncodeHamming(str);
 
-			//	cout << "str after hamming:" << endl << str << endl;
+			//cout << "str after hamming:" << endl << str << endl;
 			temp += str;
 
-			//cout << "temp before crc encode: " << endl << temp << endl;
+			// cout << "temp before crc encode: " << endl << temp << endl;
 
 			temp += this->_crcEncoder.EncodeCRC(temp);
-			//	cout << "temp after crc encode: " << endl << temp << endl;
+			//cout << "temp after crc encode: " << endl << temp << endl;
 
 			this->_encodedData.push_back(temp);
 			temp.clear();
 		}
 	}
+
+	string EncodeBytesToHamming(string message)
+	{
+		string encodedHamming = "";
+
+		for (int i = 0; i < message.length() / 8; i++)
+		{
+			//	cout << "byte: " << message.substr(i, 8) << endl;
+			encodedHamming += this->_hammingEncoder.EncodeHamming(message.substr(i, 8));
+			//	cout << "hamm: " << this->_hammingEncoder.EncodeHamming(message.substr(i, 8)) << endl;
+			//	cout << "encoded hamming now: " << encodedHamming << endl;
+		}
+		cout << "encoded hamming now: " << encodedHamming << endl;
+
+		return encodedHamming;
+	}
+
 	void DecodeData(vector<string> data)
 	{
 		string syn1;
