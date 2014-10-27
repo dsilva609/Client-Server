@@ -1,7 +1,5 @@
 #include "Server.cpp"
 #include "BinaryParser.cpp"
-#include "CRCEncoder.cpp"
-#include "HammingEncoder.cpp"
 
 using namespace std;
 
@@ -11,14 +9,14 @@ int main()
 	BinaryParser parser;
 	vector<string> data;
 
-	//data = parser.Parse("data.txt", false);
+	data = parser.Parse("data.txt", false);
 
 	//server.Start("127.0.0.1", "daytime", data);
 
 
-	CRCEncoder encoder;
-	string msg = encoder.EncodeCRC("00010110000101100000010011110100111001010111001111110100");
-	cout << encoder.DecodeCRC(msg) << endl;
+	//CRCEncoder encoder;
+	//string msg = encoder.EncodeCRC("00010110000101100000010011110100111001010111001111110100");
+	//cout << encoder.DecodeCRC(msg) << endl;
 
 	//HammingEncoder hamming;
 

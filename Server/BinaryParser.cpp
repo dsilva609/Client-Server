@@ -4,6 +4,8 @@
 #include <string>
 #include <bitset>
 #include <boost/foreach.hpp>
+#include "CRCEncoder.cpp"
+#include "HammingEncoder.cpp"
 
 using namespace boost;
 using namespace std;
@@ -13,32 +15,38 @@ using namespace std;
 class BinaryParser
 {
 public:
-	vector<string> Parse(string filename, bool read) {
+	vector<string> Parse(string filename, bool read)
+	{
 		Read(filename);
 		if (read)
-			DecodeData(data);
+			DecodeData(this->_data);
 		else
 			EncodeData();
 
-		return encodedData;
+		return this->_encodedData;
 	}
 
 private:
-	vector<string> data;
-	vector<string> encodedData;
+	vector<string> _data;
+	vector<string> _encodedData;
+	CRCEncoder _crcEncoder;//apply to entire frame
+	HammingEncoder _hammingEncoder;//apply only to message
 
-	void Read(string filename) {
+	void Read(string filename)
+	{
 		fstream stream;
 		string lineIn;
 
 		stream.open(filename);
 
-		if (stream.good()) {
+		if (stream.good())
+		{
 			cout << "Reading contents of " << filename << "..." << endl;
-			while (stream.good()) {
+			while (stream.good())
+			{
 				getline(stream, lineIn);
 
-				data.push_back(lineIn);
+				this->_data.push_back(lineIn);
 			}
 			stream.close();
 		}
@@ -46,15 +54,18 @@ private:
 			cout << "ERROR: Could not open file: " << filename << endl;
 	}
 
-	string ConvertToBinary(string str, bool withParity, bool isInt = false) {
+	string ConvertToBinary(string str, bool withParity, bool isInt = false)
+	{
 		string temp = "";
 		string binStr = "";
 		char bit;
 		if (isInt)
 			return bitset<8>(stoi(str)).to_string();
 
-		if (withParity) {
-			for (int i = 0; i < str.length(); i++){
+		if (withParity)
+		{
+			for (int i = 0; i < str.length(); i++)
+			{
 				temp += bitset<7>(str[i]).to_string();
 
 				bit = EvaluateParity(temp);
@@ -63,17 +74,20 @@ private:
 			}
 			temp = binStr;
 		}
-		else {
+		else
+		{
 			for (int i = 0; i < str.length(); i++)
 				temp += bitset<8>(str[i]).to_string();
 		}
 		return temp;
 	}
 
-	char EvaluateParity(string binStr) {
+	char EvaluateParity(string binStr)
+	{
 		int numOnes = 0;
 
-		for each (auto elem in binStr) {
+		for each (auto elem in binStr)
+		{
 			if (elem == '1')
 				numOnes++;
 		}
@@ -83,24 +97,37 @@ private:
 		return '0';
 	}
 
-	void EncodeData() {
+	void EncodeData()
+	{
 		string temp;
 		temp = "";
 
-		for each (auto str in data)
+		for each (auto str in this->_data)
 		{
 			temp += ConvertToBinary(to_string(SYN), false, true);
 			temp += ConvertToBinary(to_string(SYN), false, true);
 
-			temp += ConvertToBinary(to_string(str.length()), false, true);
-			str = ConvertToBinary(str, true);
+			temp += ConvertToBinary(to_string(str.length()), false, true);//string is SYN SYN length
+			str = ConvertToBinary(str, true);//message string, do hamming encoding
+
+			//	cout << "str before hamming:" << endl << str << endl;
+
+			str = this->_hammingEncoder.EncodeHamming(str);
+
+			//	cout << "str after hamming:" << endl << str << endl;
 			temp += str;
 
-			encodedData.push_back(temp);
+			//cout << "temp before crc encode: " << endl << temp << endl;
+
+			temp += this->_crcEncoder.EncodeCRC(temp);
+			//	cout << "temp after crc encode: " << endl << temp << endl;
+
+			this->_encodedData.push_back(temp);
 			temp.clear();
 		}
 	}
-	void DecodeData(vector<string> data) {
+	void DecodeData(vector<string> data)
+	{
 		string syn1;
 		string syn2;
 		int length;
@@ -110,7 +137,8 @@ private:
 		char bit;
 
 		cout << "Contents: " << endl;
-		for each(auto item in data) {
+		for each(auto item in data)
+		{
 			if (item.size() == 0)
 				continue;
 
@@ -124,13 +152,15 @@ private:
 			message = item.substr(24);
 
 			cout << "\t";
-			while ((pos / 8) < length) {
+			while ((pos / 8) < length)
+			{
 				for (int i = pos; i < pos + 8; i++)
 					temp += message.at(i);
 
 				pos = pos + 8;
 				bit = EvaluateParity(temp);
-				if (bit == '0') {
+				if (bit == '0')
+				{
 					temp = char(bitset<7>(temp.substr(1)).to_ulong());
 
 					cout << temp;
