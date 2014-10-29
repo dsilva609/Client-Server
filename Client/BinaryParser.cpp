@@ -174,17 +174,19 @@ private:
 
 			result = this->_crcEncoder.DecodeCRC(item);
 
-			syn1 = result.substr(0, 8);
-			syn2 = result.substr(8, 8);
 
-			length = bitset<8>(result.substr(16, 8)).to_ulong();
-			if (length == 0)
-				continue;
-
-			message = result.substr(24);
 
 			if (result.length() != 0)
 			{
+				syn1 = result.substr(0, 8);
+				syn2 = result.substr(8, 8);
+
+				length = bitset<8>(result.substr(16, 8)).to_ulong();
+				if (length == 0)
+					continue;
+
+				message = result.substr(24);
+
 				item = DecodeBytesFromHamming(message);
 				message = item;
 			}
@@ -201,12 +203,6 @@ private:
 
 				continue;
 			}
-
-
-
-
-
-
 
 			cout << "\t";
 			while ((pos / 8) < length)
@@ -234,6 +230,9 @@ private:
 
 		cout << "successful decodes: " << numSuccessful << endl;
 		cout << "unsuccessful decodes: " << numUnsuccessful << endl;
+
+		if (numUnsuccessful != 0)
+			CorrectFrame(corruptFrames);
 	}
 
 	string DecodeBytesFromHamming(string message)
@@ -250,5 +249,23 @@ private:
 		//	cout << "encoded hamming now: " << encodedHamming << endl;
 
 		return decodedHamming;
+	}
+
+	void CorrectFrame(vector<CorruptFrame> corruptData)
+	{
+		cout << "Performing error correction..." << endl;
+
+		/*
+		ALGORITHM
+
+		remove crc hash
+		while bad bits
+		perform hamming decode and find error positions
+		add positions
+		flip ^ that bit
+		run hamming decode again
+
+
+		*/
 	}
 };
