@@ -181,8 +181,10 @@ private:
 		for each(auto item in data)
 		{
 			if (item.size() == 0)
+			{
+				count++;
 				continue;
-
+			}
 			result = this->_crcEncoder.DecodeCRC(item);
 
 
@@ -194,7 +196,10 @@ private:
 
 				length = bitset<8>(result.substr(16, 8)).to_ulong();
 				if (length == 0)
+				{
+					count++;
 					continue;
+				}
 
 				message = result.substr(24);
 
@@ -210,6 +215,7 @@ private:
 				corruptData.frameNum = count;
 				corruptFrames.push_back(corruptData);
 
+				count++;
 				numUnsuccessful++;
 
 				continue;
@@ -306,6 +312,7 @@ private:
 			{
 				string currentStr;
 				currentStr = message.substr(i, 12);
+				cout << "checking: " << currentStr << endl;
 				temp = DecodeBytesFromHamming(currentStr);
 
 				if (temp[0] == '_')
