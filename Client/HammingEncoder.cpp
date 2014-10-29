@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+#include <boost/lexical_cast.hpp>
 
 using namespace std;
+using namespace boost;
 
 class HammingEncoder
 {
@@ -57,7 +59,7 @@ private:
 				{
 					cout << "check failure at: " << pow(2, counter) - 1 << endl;
 					numUnsuccessful++;
-					error += to_string(pow(2, counter) - 1);
+					error += lexical_cast<string>(pow(2, counter) - 1);
 				}
 			}
 

@@ -25,7 +25,18 @@ public:
 	{
 		Read(filename);
 		if (read)
-			DecodeData(this->_data);
+		{
+			//	DecodeData(this->_data);
+			vector<CorruptFrame> data;
+			CorruptFrame badframe;
+			//0001011000010110000000110000110000011101110000100010110100111010101110001000
+			badframe.frameData = "0001011000010110000000111100110000011101110000100010110100111010101110001000";
+			badframe.frameNum = 0;
+
+			data.push_back(badframe);
+
+			CorrectFrame(data);
+		}
 		else
 			EncodeData();
 
@@ -272,10 +283,29 @@ private:
 
 		for each(auto item in corruptData)
 		{
-			cout << "item is: " << endl << item.frameData << endl;
-			cout << "withour crc: " << endl << item.frameData.substr(0, item.frameData.length() - 16) << endl;
+			string temp;
+			string errorLocations = "";
 
-			cout << "bad hamming bits: " << DecodeBytesFromHamming(item.frameData) << endl;
+			cout << "item is: " << endl << item.frameData << endl;
+			item.frameData = item.frameData.substr(0, item.frameData.length() - 16);
+			item.frameData = item.frameData.substr(24);
+			cout << "without crc, syn1, syn2, length: " << endl << item.frameData << endl;
+
+			for (int i = 0; i < item.frameData.length(); i += 12)
+			{
+
+				//result =
+				temp = DecodeBytesFromHamming(item.frameData.substr(i, 12));
+
+				if (temp[0] == '_')
+				{
+					errorLocations = (temp.substr(1));
+					cout << "bad hamming bits: " << endl << errorLocations << endl;
+				}
+
+				errorLocations.clear();
+				temp.clear();
+			}
 		}
 
 	}
