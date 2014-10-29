@@ -131,7 +131,7 @@ private:
 	{
 		string encodedHamming = "";
 
-		for (int i = 0; i < message.length() / 8; i++)
+		for (int i = 0; i < message.length(); i += 8)
 		{
 			//	cout << "byte: " << message.substr(i, 8) << endl;
 			encodedHamming += this->_hammingEncoder.EncodeHamming(message.substr(i, 8));
