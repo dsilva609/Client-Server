@@ -25,6 +25,10 @@ private:
 		int counter = 0;
 		string testStr = "";
 
+		int numSuccessful = 0;
+		int numUnsuccessful = 0;
+		string error = "_";
+
 		numPBits = floor(log2(message.length())) + 1;
 
 		if (encode)
@@ -38,22 +42,7 @@ private:
 
 		while (counter < numPBits)
 		{
-			//		cout << "counter is: " << counter << endl;
-			for (int i = pow(2, counter) - 1; i < encodedMessage.length(); i += pow(2, counter) * 2)
-			{
-				//	cout << "i is: " << i << endl;
-
-				if (i + pow(2, counter) > encodedMessage.length())
-				{
-					//cout << "checking: " << encodedMessage.substr(i) << endl;
-					testStr += encodedMessage.substr(i);
-				}
-				else
-				{
-					//	cout << "checking: " << encodedMessage.substr(i, pow(2, counter)) << endl;
-					testStr += encodedMessage.substr(i, pow(2, counter));
-				}
-			}
+			testStr = determineTestString(counter, encodedMessage);
 
 			if (encode)
 				encodedMessage[pow(2, counter) - 1] = determineParity(testStr);
@@ -62,23 +51,56 @@ private:
 				if (encodedMessage[pow(2, counter) - 1] == determineParity(testStr.substr(1)))
 				{
 					cout << "check at " << pow(2, counter) - 1 << " successful" << endl;
-
+					numSuccessful++;
 				}
 				else
+				{
 					cout << "check failure at: " << pow(2, counter) - 1 << endl;
+					numUnsuccessful++;
+					error += to_string(pow(2, counter) - 1);
+				}
 			}
 
 			testStr.clear();
 			counter++;
 		}
 
-		if (!encode)
+		if (!encode && numUnsuccessful != 0)
+		{
+			return error;
+		}
+
+		if (!encode && numUnsuccessful == 0)
 		{
 			for (int i = numPBits - 1; i >= 0; i--)
 				encodedMessage.erase(pow(2, i) - 1, 1);
 		}
 
 		return encodedMessage;
+	}
+
+	string determineTestString(int counter, string encodedMessage)
+	{
+		string testStr = "";
+		//		cout << "counter is: " << counter << endl;
+		for (int i = pow(2, counter) - 1; i < encodedMessage.length(); i += pow(2, counter) * 2)
+		{
+			//	cout << "i is: " << i << endl;
+
+			if (i + pow(2, counter) > encodedMessage.length())
+			{
+				//cout << "checking: " << encodedMessage.substr(i) << endl;
+				testStr += encodedMessage.substr(i);
+			}
+			else
+			{
+				//	cout << "checking: " << encodedMessage.substr(i, pow(2, counter)) << endl;
+				testStr += encodedMessage.substr(i, pow(2, counter));
+			}
+		}
+
+		return testStr;
+
 	}
 
 	char determineParity(string testStr)

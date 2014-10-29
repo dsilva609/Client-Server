@@ -259,6 +259,8 @@ private:
 		ALGORITHM
 
 		remove crc hash
+		remove SYN SYN
+		remove and store length
 		while bad bits
 		perform hamming decode and find error positions
 		add positions
@@ -267,5 +269,14 @@ private:
 
 
 		*/
+
+		for each(auto item in corruptData)
+		{
+			cout << "item is: " << endl << item.frameData << endl;
+			cout << "withour crc: " << endl << item.frameData.substr(0, item.frameData.length() - 16) << endl;
+
+			cout << "bad hamming bits: " << DecodeBytesFromHamming(item.frameData) << endl;
+		}
+
 	}
 };
