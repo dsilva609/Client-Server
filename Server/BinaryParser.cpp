@@ -12,6 +12,12 @@ using namespace std;
 
 #define SYN char(22)
 
+struct CorruptFrame
+{
+	string frameData;
+	int frameNum;
+};
+
 class BinaryParser
 {
 public:
@@ -155,6 +161,10 @@ private:
 		string result;
 		int count = 0;
 
+		int numSuccessful = 0;
+		int numUnsuccessful = 0;
+		CorruptFrame corruptData;
+		vector<CorruptFrame> corruptFrames;
 
 		cout << "Contents: " << endl;
 		for each(auto item in data)
@@ -166,7 +176,6 @@ private:
 
 			syn1 = result.substr(0, 8);
 			syn2 = result.substr(8, 8);
-
 
 			length = bitset<8>(result.substr(16, 8)).to_ulong();
 			if (length == 0)
@@ -183,6 +192,13 @@ private:
 			{
 				//place corrupt string in error vector with count
 				cerr << "CRC check failure at: " << count << endl;
+
+				corruptData.frameData = item;
+				corruptData.frameNum = count;
+				corruptFrames.push_back(corruptData);
+
+				numUnsuccessful++;
+
 				continue;
 			}
 
@@ -212,8 +228,12 @@ private:
 			}
 			pos = 0;
 			cout << endl;
+			numSuccessful++;
 			count++;
 		}
+
+		cout << "successful decodes: " << numSuccessful << endl;
+		cout << "unsuccessful decodes: " << numUnsuccessful << endl;
 	}
 
 	string DecodeBytesFromHamming(string message)
