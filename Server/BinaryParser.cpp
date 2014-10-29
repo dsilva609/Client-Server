@@ -12,6 +12,12 @@ using namespace std;
 
 #define SYN char(22)
 
+struct CorruptFrame
+{
+	string frameData;
+	int frameNum;
+};
+
 class BinaryParser
 {
 public:
@@ -119,7 +125,7 @@ private:
 
 			// cout << "temp before crc encode: " << endl << temp << endl;
 
-			temp += this->_crcEncoder.EncodeCRC(temp);
+			temp = this->_crcEncoder.EncodeCRC(temp);
 			//cout << "temp after crc encode: " << endl << temp << endl;
 
 			this->_encodedData.push_back(temp);
@@ -131,7 +137,7 @@ private:
 	{
 		string encodedHamming = "";
 
-		for (int i = 0; i < message.length() / 8; i++)
+		for (int i = 0; i < message.length(); i += 8)
 		{
 			//	cout << "byte: " << message.substr(i, 8) << endl;
 			encodedHamming += this->_hammingEncoder.EncodeHamming(message.substr(i, 8));
@@ -152,6 +158,13 @@ private:
 		string temp = "";
 		int pos = 0;
 		char bit;
+		string result;
+		int count = 0;
+
+		int numSuccessful = 0;
+		int numUnsuccessful = 0;
+		CorruptFrame corruptData;
+		vector<CorruptFrame> corruptFrames;
 
 		cout << "Contents: " << endl;
 		for each(auto item in data)
@@ -159,14 +172,41 @@ private:
 			if (item.size() == 0)
 				continue;
 
-			syn1 = item.substr(0, 8);
-			syn2 = item.substr(8, 16);
+			result = this->_crcEncoder.DecodeCRC(item);
 
-			length = bitset<8>(item.substr(16, 24)).to_ulong();
+			syn1 = result.substr(0, 8);
+			syn2 = result.substr(8, 8);
+
+			length = bitset<8>(result.substr(16, 8)).to_ulong();
 			if (length == 0)
 				continue;
 
-			message = item.substr(24);
+			message = result.substr(24);
+
+			if (result.length() != 0)
+			{
+				item = DecodeBytesFromHamming(message);
+				message = item;
+			}
+			else
+			{
+				//place corrupt string in error vector with count
+				cerr << "CRC check failure at: " << count << endl;
+
+				corruptData.frameData = item;
+				corruptData.frameNum = count;
+				corruptFrames.push_back(corruptData);
+
+				numUnsuccessful++;
+
+				continue;
+			}
+
+
+
+
+
+
 
 			cout << "\t";
 			while ((pos / 8) < length)
@@ -188,6 +228,27 @@ private:
 			}
 			pos = 0;
 			cout << endl;
+			numSuccessful++;
+			count++;
 		}
+
+		cout << "successful decodes: " << numSuccessful << endl;
+		cout << "unsuccessful decodes: " << numUnsuccessful << endl;
+	}
+
+	string DecodeBytesFromHamming(string message)
+	{
+		string decodedHamming = "";
+
+		for (int i = 0; i < message.length(); i += 12)
+		{
+			//	cout << "byte: " << message.substr(i, 8) << endl;
+			decodedHamming += this->_hammingEncoder.DecodeHamming(message.substr(i, 12));
+			//	cout << "hamm: " << this->_hammingEncoder.EncodeHamming(message.substr(i, 8)) << endl;
+			//	cout << "encoded hamming now: " << encodedHamming << endl;
+		}
+		//	cout << "encoded hamming now: " << encodedHamming << endl;
+
+		return decodedHamming;
 	}
 };

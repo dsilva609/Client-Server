@@ -11,7 +11,7 @@ int main()
 
 	data = parser.Parse("data.txt", false);
 
-	//server.Start("127.0.0.1", "daytime", data);
+	server.Start("127.0.0.1", "daytime", data);
 
 
 	//CRCEncoder encoder;
@@ -23,5 +23,6 @@ int main()
 	//cout << "encoded message: " << hamming.EncodeHamming("10011010") << endl;
 
 	//cout << hamming.DecodeHamming(hamming.EncodeHamming("10011010")) << endl;
+
 	exit(EXIT_SUCCESS);
 }
