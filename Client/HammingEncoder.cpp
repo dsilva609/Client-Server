@@ -52,12 +52,12 @@ private:
 			{
 				if (encodedMessage[pow(2, counter) - 1] == determineParity(testStr.substr(1)))
 				{
-					cout << "check at " << pow(2, counter) - 1 << " successful" << endl;
+					//	cout << "check at " << pow(2, counter) - 1 << " successful" << endl;
 					numSuccessful++;
 				}
 				else
 				{
-					cout << "check failure at: " << pow(2, counter) - 1 << endl;
+					cout << "parity check failure at position: " << pow(2, counter) - 1 << endl;
 					numUnsuccessful++;
 					error += pow(2, counter) - 1;
 				}

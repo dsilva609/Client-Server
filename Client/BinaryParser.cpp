@@ -26,16 +26,16 @@ public:
 		Read(filename);
 		if (read)
 		{
-			//	DecodeData(this->_data);
-			vector<CorruptFrame> data;
-			CorruptFrame badframe;
-			//0001011000010110000000110000110000011101110000100010110100111010101110001000
-			badframe.frameData = "0001011000010110000000111000110000011101110000100010110100111010101110001000";
-			badframe.frameNum = 0;
+			DecodeData(this->_data);
+			//vector<CorruptFrame> data;
+			//CorruptFrame badframe;
+			////0001011000010110000000110000110000011101110000100010110100111010101110001000
+			//badframe.frameData = "0001011000010110000000110000110000010101110000100010110100111010101110001000";
+			//badframe.frameNum = 0;
 
-			data.push_back(badframe);
+			//data.push_back(badframe);
 
-			CorrectFrame(data);
+			//CorrectFrame(data);
 		}
 		else
 			EncodeData();
@@ -264,7 +264,7 @@ private:
 
 	void CorrectFrame(vector<CorruptFrame> corruptData)
 	{
-		cout << "Performing error correction..." << endl;
+		cout << endl << "Performing error correction..." << endl;
 
 		/*
 		ALGORITHM
@@ -293,13 +293,14 @@ private:
 			string message;
 			string correctedMessage = "";
 
-			cout << "item is: " << endl << item.frameData << endl;
+			//	cout << "item is: " << endl << item.frameData << endl;
+			cout << "Correcting frame: " << item.frameNum << endl;
 			crcHash = item.frameData.substr(item.frameData.length() - 16, 16);
 			item.frameData = item.frameData.substr(0, item.frameData.length() - 16);//remove crc
 			controlLengthStr = item.frameData.substr(0, 24);//save syn syn length
 
 			message = item.frameData.substr(24);//message
-			cout << "without crc, syn1, syn2, length: " << endl << message << endl;
+			//	cout << "without crc, syn1, syn2, length: " << endl << message << endl;
 
 			for (int i = 0; i < message.length(); i += 12)
 			{
@@ -310,7 +311,7 @@ private:
 				if (temp[0] == '_')
 				{
 					errorLocations = (temp.substr(1));
-					cout << "bad hamming bits: " << endl << errorLocations << endl;
+					//cout << "bad hamming bits: " << endl << errorLocations << endl;
 
 					if (currentStr[stoi(errorLocations)] == '1')
 						currentStr[stoi(errorLocations)] = '0';
@@ -325,7 +326,9 @@ private:
 			correctedData.push_back(controlLengthStr + correctedMessage + crcHash);
 
 		}
-		cout << correctedData.at(0) << endl;
+		//cout << correctedData.at(0) << endl;
+
+		cout << endl << "Decoding corrected data..." << endl;
 		DecodeData(correctedData);
 	}
 };
