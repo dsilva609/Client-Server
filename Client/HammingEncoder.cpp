@@ -29,7 +29,7 @@ private:
 
 		int numSuccessful = 0;
 		int numUnsuccessful = 0;
-		string error = "_";
+		int error = 0;
 
 		numPBits = floor(log2(message.length())) + 1;
 
@@ -59,7 +59,7 @@ private:
 				{
 					cout << "check failure at: " << pow(2, counter) - 1 << endl;
 					numUnsuccessful++;
-					error += lexical_cast<string>(pow(2, counter) - 1);
+					error += pow(2, counter) - 1;
 				}
 			}
 
@@ -69,7 +69,7 @@ private:
 
 		if (!encode && numUnsuccessful != 0)
 		{
-			return error;
+			return "_" + to_string(error);
 		}
 
 		if (!encode && numUnsuccessful == 0)

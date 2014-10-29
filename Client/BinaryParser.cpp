@@ -30,7 +30,7 @@ public:
 			vector<CorruptFrame> data;
 			CorruptFrame badframe;
 			//0001011000010110000000110000110000011101110000100010110100111010101110001000
-			badframe.frameData = "0001011000010110000000111100110000011101110000100010110100111010101110001000";
+			badframe.frameData = "0001011000010110000000111000110000011101110000100010110100111010101110001000";
 			badframe.frameNum = 0;
 
 			data.push_back(badframe);
@@ -280,33 +280,52 @@ private:
 
 
 		*/
+		vector<string> correctedData;
+
 
 		for each(auto item in corruptData)
 		{
 			string temp;
 			string errorLocations = "";
 
+			string controlLengthStr;
+			string crcHash;
+			string message;
+			string correctedMessage = "";
+
 			cout << "item is: " << endl << item.frameData << endl;
-			item.frameData = item.frameData.substr(0, item.frameData.length() - 16);
-			item.frameData = item.frameData.substr(24);
-			cout << "without crc, syn1, syn2, length: " << endl << item.frameData << endl;
+			crcHash = item.frameData.substr(item.frameData.length() - 16, 16);
+			item.frameData = item.frameData.substr(0, item.frameData.length() - 16);//remove crc
+			controlLengthStr = item.frameData.substr(0, 24);//save syn syn length
 
-			for (int i = 0; i < item.frameData.length(); i += 12)
+			message = item.frameData.substr(24);//message
+			cout << "without crc, syn1, syn2, length: " << endl << message << endl;
+
+			for (int i = 0; i < message.length(); i += 12)
 			{
-
-				//result =
-				temp = DecodeBytesFromHamming(item.frameData.substr(i, 12));
+				string currentStr;
+				currentStr = message.substr(i, 12);
+				temp = DecodeBytesFromHamming(currentStr);
 
 				if (temp[0] == '_')
 				{
 					errorLocations = (temp.substr(1));
 					cout << "bad hamming bits: " << endl << errorLocations << endl;
-				}
 
+					if (currentStr[stoi(errorLocations)] == '1')
+						currentStr[stoi(errorLocations)] = '0';
+					else
+						currentStr[stoi(errorLocations)] = '1';
+
+				}
+				correctedMessage += currentStr;
 				errorLocations.clear();
 				temp.clear();
 			}
-		}
+			correctedData.push_back(controlLengthStr + correctedMessage + crcHash);
 
+		}
+		cout << correctedData.at(0) << endl;
+		DecodeData(correctedData);
 	}
 };
