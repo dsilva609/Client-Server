@@ -10,9 +10,11 @@
 using boost::asio::ip::tcp;
 using namespace std;
 
-class Client {
+class Client
+{
 public:
-	void Start(string endPoint, string filename) {
+	void Start(string endPoint, string filename)
+	{
 		try
 		{
 			Create(endPoint);
@@ -33,18 +35,23 @@ private:
 	tcp::resolver::iterator _endpoint_iterator;
 	tcp::socket *_socket;
 
-	void Create(string endPoint) {
+	void Create(string endPoint)
+	{
 		this->_resolver = new tcp::resolver(this->_IOService);
 		this->_query = new tcp::resolver::query(endPoint, "daytime");
 		this->_endpoint_iterator = (*this->_resolver).resolve(*this->_query);
 		this->_socket = new tcp::socket(this->_IOService);
 	}
 
-	void Read(string filename) {
+	void Read(string filename)
+	{
 		string receivedData = "";
+		vector<string> data;
+
 
 		cout << "Reveiving data..." << endl;
-		for (;;) {
+		for (;;)
+		{
 			boost::array<char, 536> buf;
 			boost::system::error_code error;
 
@@ -57,35 +64,48 @@ private:
 
 			for (int i = 0; i < len; i++)
 				receivedData += buf.at(i);
+
+			data.push_back(receivedData);
+			receivedData.clear();
 		}
-		SaveToFile(filename, receivedData);
+		for each (string str in data)
+		{
+			cout << "data: " << str << endl;
+		}
+
+
+		SaveToFile(filename, data);
 
 		(*this->_socket).close();
 		cout << "Connection to server closed." << endl;
 	}
 
-	void SaveToFile(string filename, string receivedData) {
+	void SaveToFile(string filename, vector<string> receivedData)
+	{
 		ofstream stream;
-		vector<string> contents;
-		string reg = "";
+		//	vector<string> contents;
+		//		string reg = "";
 
-		reg += bitset<8>(char(22)).to_string();
-		reg += reg;
+		//	reg += bitset<8>(char(22)).to_string();
+		//	reg += reg;
 
 
-		boost::algorithm::split_regex(contents, receivedData, boost::regex(reg));
+		//		boost::algorithm::split_regex(contents, receivedData, boost::regex(reg));
 
-		for (int i = 0; i < contents.size(); i++) {
-			if (contents.at(i).size() != 0)
-				contents.at(i) = reg + contents.at(i);
-		}
+		//	for (int i = 0; i < contents.size(); i++)
+		//		{
+		//			if (contents.at(i).size() != 0)
+		//				contents.at(i) = reg + contents.at(i);
+		//		}
 
 		stream.open(filename);
 
-		if (stream.good()) {
+		if (stream.good())
+		{
 			cout << "Saving data to " << filename << "..." << endl;
 
-			for each (auto str in contents) {
+			for each (auto str in receivedData)
+			{
 				if (str != "")
 					stream << str << endl;
 			}

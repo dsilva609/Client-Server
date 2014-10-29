@@ -6,16 +6,25 @@
 using boost::asio::ip::tcp;
 using namespace std;
 
-class Server {
+class Server
+{
 public:
-	void Start(string endPoint, string port, vector<string> &data) {
+	void Start(string endPoint, string port, vector<string> &data)
+	{
 		try
 		{
 			Create(endPoint, port);
 
-			for (;;) {
+			for (;;)
+			{
 				PollConnections();
-				SendData(data);
+				for each (string item in data)
+				{
+					SendData(item);
+					//SendData(data);
+				}
+				(*this->_socket).close();
+				cout << "Connection closed." << endl << endl;
 			}
 		}
 		catch (exception& e)
@@ -32,7 +41,8 @@ private:
 	tcp::acceptor *_acceptor;
 	tcp::socket *_socket;
 
-	void Create(string endPoint, string port) {
+	void Create(string endPoint, string port)
+	{
 		try
 		{
 			this->_resolver = new tcp::resolver(this->_IOService);
@@ -51,7 +61,8 @@ private:
 		}
 	}
 
-	void PollConnections() {
+	void PollConnections()
+	{
 		// creates a socket
 		this->_socket = new tcp::socket(this->_IOService);
 
@@ -61,16 +72,18 @@ private:
 		cout << "Client connection found." << endl;
 	}
 
-	void SendData(vector<string> &data) {
+	//void SendData(vector<string> &data)
+	void SendData(string &data)
+	{
 		boost::system::error_code ignored_error;
 
 		// writing the message for current time
 		cout << "Sending data..." << endl;
+		cout << "data is: " << data << endl;
+		//	for each(auto item in data)
+		boost::asio::write(*this->_socket, boost::asio::buffer(data), boost::asio::transfer_exactly(data.length()), ignored_error);
 
-		for each(auto item in data)
-			boost::asio::write(*this->_socket, boost::asio::buffer(item), boost::asio::transfer_all(), ignored_error);
-
-		(*this->_socket).close();
-		cout << "Connection closed." << endl << endl;
+		/*(*this->_socket).close();
+		cout << "Connection closed." << endl << endl;*/
 	}
 };
