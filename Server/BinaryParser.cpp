@@ -7,9 +7,8 @@
 #include "CRCEncoder.cpp"
 #include "HammingEncoder.cpp"
 
-using namespace boost;
 using namespace std;
-
+using namespace boost;
 #define SYN char(22)
 
 struct CorruptFrame
@@ -25,7 +24,20 @@ public:
 	{
 		Read(filename);
 		if (read)
-			DecodeData(this->_data);
+		{
+			//		DecodeData(this->_data);
+			vector<CorruptFrame> data;
+			CorruptFrame badframe;
+			//0001011000010110000000110000110000011101110000100010110100111010101110001000
+			//00010110 00010110 00000011 000011000001 110111000010 001011010011 1010101110001000
+			//test string 3 bytes 0001011000010110000000110000100000011101110100100010010100111010101110001000
+			badframe.frameData = "0001011000010110000000110000110000011101110000110010110100111010101110001000";
+			badframe.frameNum = 0;
+
+			data.push_back(badframe);
+
+			CorrectFrame(data);
+		}
 		else
 			EncodeData();
 
@@ -170,43 +182,45 @@ private:
 		for each(auto item in data)
 		{
 			if (item.size() == 0)
+			{
+				count++;
 				continue;
-
+			}
 			result = this->_crcEncoder.DecodeCRC(item);
 
-			syn1 = result.substr(0, 8);
-			syn2 = result.substr(8, 8);
 
-			length = bitset<8>(result.substr(16, 8)).to_ulong();
-			if (length == 0)
-				continue;
-
-			message = result.substr(24);
 
 			if (result.length() != 0)
 			{
+				syn1 = result.substr(0, 8);
+				syn2 = result.substr(8, 8);
+
+				length = bitset<8>(result.substr(16, 8)).to_ulong();
+				if (length == 0)
+				{
+					count++;
+					continue;
+				}
+
+				message = result.substr(24);
+
 				item = DecodeBytesFromHamming(message);
 				message = item;
 			}
 			else
 			{
 				//place corrupt string in error vector with count
-				cerr << "CRC check failure at: " << count << endl;
+				cerr << "CRC check failure at frame: " << count << endl;
 
 				corruptData.frameData = item;
 				corruptData.frameNum = count;
 				corruptFrames.push_back(corruptData);
 
+				count++;
 				numUnsuccessful++;
 
 				continue;
 			}
-
-
-
-
-
-
 
 			cout << "\t";
 			while ((pos / 8) < length)
@@ -234,6 +248,9 @@ private:
 
 		cout << "successful decodes: " << numSuccessful << endl;
 		cout << "unsuccessful decodes: " << numUnsuccessful << endl;
+
+		if (numUnsuccessful != 0)
+			CorrectFrame(corruptFrames);
 	}
 
 	string DecodeBytesFromHamming(string message)
@@ -250,5 +267,76 @@ private:
 		//	cout << "encoded hamming now: " << encodedHamming << endl;
 
 		return decodedHamming;
+	}
+
+	void CorrectFrame(vector<CorruptFrame> corruptData)
+	{
+		cout << endl << "Performing error correction..." << endl;
+
+		/*
+		ALGORITHM
+
+		remove crc hash
+		remove SYN SYN
+		remove and store length
+		while bad bits
+		perform hamming decode and find error positions
+		add positions
+		flip ^ that bit
+		run hamming decode again
+
+
+		*/
+		vector<string> correctedData;
+
+
+		for each(auto item in corruptData)
+		{
+			string temp;
+			string errorLocations = "";
+
+			string controlLengthStr;
+			string crcHash;
+			string message;
+			string correctedMessage = "";
+
+			//	cout << "item is: " << endl << item.frameData << endl;
+			cout << "Correcting frame: " << item.frameNum << endl;
+			crcHash = item.frameData.substr(item.frameData.length() - 16, 16);
+			item.frameData = item.frameData.substr(0, item.frameData.length() - 16);//remove crc
+			controlLengthStr = item.frameData.substr(0, 24);//save syn syn length
+
+			message = item.frameData.substr(24);//message
+			//	cout << "without crc, syn1, syn2, length: " << endl << message << endl;
+
+			for (int i = 0; i < message.length(); i += 12)
+			{
+				string currentStr;
+				currentStr = message.substr(i, 12);
+				cout << "checking byte: " << (i / 12) + 1 << endl;
+				temp = DecodeBytesFromHamming(currentStr);
+
+				if (temp[0] == '_')
+				{
+					errorLocations = (temp.substr(1));
+					//cout << "bad hamming bits: " << endl << errorLocations << endl;
+
+					if (currentStr[stoi(errorLocations) - 1] == '1')
+						currentStr[stoi(errorLocations) - 1] = '0';
+					else
+						currentStr[stoi(errorLocations) - 1] = '1';
+
+				}
+				correctedMessage += currentStr;
+				errorLocations.clear();
+				temp.clear();
+			}
+			correctedData.push_back(controlLengthStr + correctedMessage + crcHash);
+
+		}
+		//cout << correctedData.at(0) << endl;
+
+		cout << endl << "Decoding corrected data..." << endl;
+		DecodeData(correctedData);
 	}
 };
