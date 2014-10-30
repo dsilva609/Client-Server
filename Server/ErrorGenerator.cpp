@@ -37,10 +37,25 @@ public:
 				current = msg.substr(i * 12, 12);
 				//rand()%(max-min)+min
 
-				randNum = (rand() % (12)) + 1;
+				randNum = (rand() % (12));
 				cout << randNum << endl;
+
+
 			}
 		}
+
+		/*
+		ALGORITHM
+
+		deconstruct data string
+
+		given number of bytes to change
+		randomly select byte(s) to change
+		-making sure not to change the same byte more than once
+		-randomly select 1 bit of length of byte (12) to change, must be from 0 - 11 inclusive
+
+		reconstruct string and return it
+		*/
 		return "";
 	}
 };
