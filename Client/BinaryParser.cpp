@@ -26,16 +26,18 @@ public:
 		Read(filename);
 		if (read)
 		{
-			DecodeData(this->_data);
-			//vector<CorruptFrame> data;
-			//CorruptFrame badframe;
-			////0001011000010110000000110000110000011101110000100010110100111010101110001000
-			//badframe.frameData = "0001011000010110000000110000110000010101110000100010110100111010101110001000";
-			//badframe.frameNum = 0;
+			//		DecodeData(this->_data);
+			vector<CorruptFrame> data;
+			CorruptFrame badframe;
+			//0001011000010110000000110000110000011101110000100010110100111010101110001000
+			//00010110 00010110 00000011 000011000001 110111000010 001011010011 1010101110001000
+			//test string 3 bytes 0001011000010110000000110000100000011101110100100010010100111010101110001000
+			badframe.frameData = "0001011000010110000000110000110000011101110000110010110100111010101110001000";
+			badframe.frameNum = 0;
 
-			//data.push_back(badframe);
+			data.push_back(badframe);
 
-			//CorrectFrame(data);
+			CorrectFrame(data);
 		}
 		else
 			EncodeData();
@@ -209,7 +211,7 @@ private:
 			else
 			{
 				//place corrupt string in error vector with count
-				cerr << "CRC check failure at: " << count << endl;
+				cerr << "CRC check failure at frame: " << count << endl;
 
 				corruptData.frameData = item;
 				corruptData.frameNum = count;
@@ -312,7 +314,7 @@ private:
 			{
 				string currentStr;
 				currentStr = message.substr(i, 12);
-				cout << "checking: " << currentStr << endl;
+				cout << "checking byte: " << (i / 12) + 1 << endl;
 				temp = DecodeBytesFromHamming(currentStr);
 
 				if (temp[0] == '_')
@@ -320,10 +322,10 @@ private:
 					errorLocations = (temp.substr(1));
 					//cout << "bad hamming bits: " << endl << errorLocations << endl;
 
-					if (currentStr[stoi(errorLocations)] == '1')
-						currentStr[stoi(errorLocations)] = '0';
+					if (currentStr[stoi(errorLocations) - 1] == '1')
+						currentStr[stoi(errorLocations) - 1] = '0';
 					else
-						currentStr[stoi(errorLocations)] = '1';
+						currentStr[stoi(errorLocations) - 1] = '1';
 
 				}
 				correctedMessage += currentStr;

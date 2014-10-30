@@ -59,7 +59,8 @@ private:
 				{
 					cout << "parity check failure at position: " << pow(2, counter) - 1 << endl;
 					numUnsuccessful++;
-					error += pow(2, counter) - 1;
+					error += pow(2, counter);
+					//		cout << "error is: " << error - 1 << endl;
 				}
 			}
 
@@ -69,6 +70,7 @@ private:
 
 		if (!encode && numUnsuccessful != 0)
 		{
+			cout << "error detected at position: " << error - 1 << endl;
 			return "_" + to_string(error);
 		}
 
