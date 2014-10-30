@@ -1,5 +1,6 @@
 #include <iostream>
 #include <bitset>
+#include <time.h>
 
 using namespace std;
 
@@ -13,7 +14,7 @@ public:
 		string crcHash;
 		string msg;
 
-		numBytes = 2;
+		numBytes = 3;
 		message = "0001011000010110000000110000110000011101110000100010110100111010101110001000";
 
 
@@ -28,11 +29,18 @@ public:
 		}
 		else
 		{
+			string current;
+			int randNum;
+			srand(time(0));
+			for (int i = 0; i < length; i++)
+			{
+				current = msg.substr(i * 12, 12);
+				//rand()%(max-min)+min
 
+				randNum = (rand() % (12)) + 1;
+				cout << randNum << endl;
+			}
 		}
-
-
 		return "";
 	}
-private:
 };
