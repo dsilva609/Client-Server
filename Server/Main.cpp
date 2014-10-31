@@ -9,15 +9,15 @@ int main()
 	Server server;
 	BinaryParser parser;
 	vector<string> data;
-
 	ErrorGenerator generator;
 
-	generator.GeneratorError(0, "");
+
+	data = parser.Parse("data.txt", false);
+	data = generator.Execute(data, 5);
 
 
-	//data = parser.Parse("data.txt", false);
 
-	//server.Start("127.0.0.1", "daytime", data);
+	server.Start("127.0.0.1", "daytime", data);
 
 
 	//CRCEncoder encoder;
