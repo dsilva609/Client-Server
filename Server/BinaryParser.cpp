@@ -7,8 +7,9 @@
 #include "CRCEncoder.cpp"
 #include "HammingEncoder.cpp"
 
-using namespace std;
 using namespace boost;
+using namespace std;
+
 #define SYN char(22)
 
 struct CorruptFrame
@@ -25,18 +26,18 @@ public:
 		Read(filename);
 		if (read)
 		{
-			//		DecodeData(this->_data);
-			vector<CorruptFrame> data;
-			CorruptFrame badframe;
-			//0001011000010110000000110000110000011101110000100010110100111010101110001000
-			//00010110 00010110 00000011 000011000001 110111000010 001011010011 1010101110001000
-			//test string 3 bytes 0001011000010110000000110000100000011101110100100010010100111010101110001000
-			badframe.frameData = "0001011000010110000000110000110000011101110000110010110100111010101110001000";
-			badframe.frameNum = 0;
+			DecodeData(this->_data);
+			//vector<CorruptFrame> data;
+			//CorruptFrame badframe;
+			////0001011000010110000000110000110000011101110000100010110100111010101110001000
+			////00010110 00010110 00000011 000011000001 110111000010 001011010011 1010101110001000
+			////test string 3 bytes 0001011000010110000000110000100000011101110100100010010100111010101110001000
+			//badframe.frameData = "0001011000010110000000110000110000011101110000110010110100111010101110001000";
+			//badframe.frameNum = 0;
 
-			data.push_back(badframe);
+			//data.push_back(badframe);
 
-			CorrectFrame(data);
+			//CorrectFrame(data);
 		}
 		else
 			EncodeData();
@@ -222,7 +223,7 @@ private:
 				continue;
 			}
 
-			cout << "\t";
+			//cout << "\t";
 			while ((pos / 8) < length)
 			{
 				for (int i = pos; i < pos + 8; i++)
