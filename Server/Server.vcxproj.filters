@@ -30,6 +30,9 @@
     <ClCompile Include="HammingEncoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ErrorGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data.txt">

@@ -1,3 +1,39 @@
-abc
-qwerty
-test
+EECS 3150 Data Communication - Fall 2014
+Assignment 1 (Draft copy)
+You are to write two C/C++ programs (1) a synchronous transmitter, and (2) a synchronous receiver. Both will assume the use of ASCII codes with odd bit parity.
+1. The Synchronous Transmitter
+You are to create files of bits ('0' and '1' characters) from the input files using synchronous transmission. Each block will consist of 2 SYN characters, ASCII 22), a control character indicating the length of data block followed by a maximum of 64 data characters. Assume that there are no trailing control characters. Every block transmitted must contain 64 data characters except possibly the case where the remainder of the file cannot fill the buffer. Each character will consist of 7 information bits and a parity bit. These bits will be transmitted from the least significant bit (LSB) to the most significant bit (MSB).
+2. The Synchronous Receiver
+This program should take the files created by the Transmitter as input, check for transmission errors, decode a stream of bits and print out the original transmitted message on the user's console (e.g., stdout).
+Both programs should have three distinct layers: physical, data link and application. The physical layer should contain routines to handle jobs such as converting a character into a binary bit pattern, calculating and including a parity bit, executing the cyclic redundancy check and writing bits into an output file (i.e., transmission of bits). It should also include routines for reading bits from a file (i.e., reception of bits) and converting bits into characters. The data link layer should contain routines for framing (putting two SYN characters, a LENGTH character and data into a frame) and deframing (separating those control characters from data characters). The application layer should contain routines to handle tasks such as reading data to be transmitted from input data file in the Transmitter and writing received data into display (or output data file) in the Receiver, as well as any other routines that you feel necessary. Your solution must also include a module to simulate transmission errors.
+2. Milestones
+The following are the milestones for this project:
+1) Milestone 1- Create a simple client/server (transmitter/receiver) application as discussed in the assignment that uses a simple even/odd parity bit and a simple file for "data transmission". This will be due on Thursday, October 2nd.
+2) Milestone 2- Design and implement Error Creation module. It should, in a random, way change more than one bit in the message. Your function should have the number of bits that are to be modified as an input parameter. It should also inform the user the frame, byte and bit locations of the errors introduced. The receiver must be able to report the location of errors introduced during transmission. You are also to design and implement both error detection and correction by means of CRC and Hamming respectively. You are to use CRC-ANSI as described on page 198 of your text and apply it to the entire message
+component of the frame. For Hamming you are to apply it to each individual byte of the message. Update the documentation provided in Milestone 1 by including the items proposed in this milestone. This will be due on Thursday, October 16th.
+3) Milestone 3- Modify Milestone 1 to support HDB3. This will be due on Thursday, November 14st.
+Your program should be developed using GNU versions of the C/C++ compiler. It should be layered, modularized and well commented. The following is a tentative marking scheme and what is expected to handed in for this assignment:
+1. External Documentation including (as many pages necessary to fulfill the requirements listed below.)
+- title page
+- a table of contents
+- [20%] system documentation
+- a high-level data flow diagram for the system
+- a high-level data flow diagram for each program
+- a list of routines and their brief descriptions
+- implementation details
+- [10%] test documentation
+- how you tested your program
+- testing outputs
+- [10%] user documentation
+- where is the source
+- how to run the program
+- describe parameters (if any)
+2. Source Code
+- [50%] correctness
+- [10%] programming style
+- layering
+- modularity
+- readability
+- comments
+- efficiency
+Note: Documentation for milestones should include a flow diagram and a list of modules/functions used in the application.

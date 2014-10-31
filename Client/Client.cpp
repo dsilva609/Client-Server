@@ -52,7 +52,7 @@ private:
 		cout << "Reveiving data..." << endl;
 		for (;;)
 		{
-			boost::array<char, 536> buf;
+			boost::array<char, 20000> buf;
 			boost::system::error_code error;
 
 			size_t len = (*this->_socket).read_some(boost::asio::buffer(buf), error);
