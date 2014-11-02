@@ -19,10 +19,8 @@ public:
 			{
 				PollConnections();
 				for each (string item in data)
-				{
 					SendData(item);
-					//SendData(data);
-				}
+
 				(*this->_socket).close();
 				cout << "Connection closed." << endl << endl;
 			}
@@ -72,18 +70,13 @@ private:
 		cout << "Client connection found." << endl;
 	}
 
-	//void SendData(vector<string> &data)
 	void SendData(string &data)
 	{
 		boost::system::error_code ignored_error;
 
-		// writing the message for current time
 		cout << "Sending data..." << endl;
 		cout << "data is: " << data << endl;
-		//	for each(auto item in data)
-		boost::asio::write(*this->_socket, boost::asio::buffer(data), boost::asio::transfer_exactly(data.length()), ignored_error);
 
-		/*(*this->_socket).close();
-		cout << "Connection closed." << endl << endl;*/
+		boost::asio::write(*this->_socket, boost::asio::buffer(data), boost::asio::transfer_exactly(data.length()), ignored_error);
 	}
 };

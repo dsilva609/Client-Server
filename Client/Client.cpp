@@ -83,21 +83,7 @@ private:
 	void SaveToFile(string filename, vector<string> receivedData)
 	{
 		ofstream stream;
-		//	vector<string> contents;
-		//		string reg = "";
-
-		//	reg += bitset<8>(char(22)).to_string();
-		//	reg += reg;
-
-
-		//		boost::algorithm::split_regex(contents, receivedData, boost::regex(reg));
-
-		//	for (int i = 0; i < contents.size(); i++)
-		//		{
-		//			if (contents.at(i).size() != 0)
-		//				contents.at(i) = reg + contents.at(i);
-		//		}
-
+		
 		stream.open(filename);
 
 		if (stream.good())
