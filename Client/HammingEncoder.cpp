@@ -6,17 +6,20 @@ using namespace std;
 class HammingEncoder
 {
 public:
+	//hamming encode entry point
 	string EncodeHamming(string message)
 	{
 		return CalculateHamming(message, true);
 	}
 
+	//hamming decode entry point
 	string DecodeHamming(string message)
 	{
 		return CalculateHamming(message, false);
 	}
 
 private:
+	//calculates hamming for given string and has parameter for encoding or decoding
 	string CalculateHamming(string message, bool encode)
 	{
 		int numPBits;
@@ -38,7 +41,6 @@ private:
 		}
 
 		encodedMessage = message;
-
 
 		while (counter < numPBits)
 		{
@@ -77,6 +79,7 @@ private:
 		return encodedMessage;
 	}
 
+	//determines string for polynomial division
 	string determineTestString(int counter, string encodedMessage)
 	{
 		string testStr = "";
@@ -92,6 +95,7 @@ private:
 		return testStr;
 	}
 
+	//determines odd parity bit for given string
 	char determineParity(string testStr)
 	{
 		int num = 0;
@@ -108,6 +112,7 @@ private:
 		return '1';
 	}
 
+	//determines if given number is odd
 	bool isOdd(int num)
 	{
 		if (num % 2 == 1)

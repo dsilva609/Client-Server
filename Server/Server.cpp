@@ -9,6 +9,7 @@ using namespace std;
 class Server
 {
 public:
+	//public server initialization function
 	void Start(string endPoint, string port, vector<string> &data)
 	{
 		try
@@ -39,6 +40,7 @@ private:
 	tcp::acceptor *_acceptor;
 	tcp::socket *_socket;
 
+	//creates server end point and port
 	void Create(string endPoint, string port)
 	{
 		try
@@ -59,6 +61,7 @@ private:
 		}
 	}
 
+	//listens for client connections
 	void PollConnections()
 	{
 		// creates a socket
@@ -70,6 +73,7 @@ private:
 		cout << "Client connection found." << endl;
 	}
 
+	//sends data to client
 	void SendData(string &data)
 	{
 		boost::system::error_code ignored_error;

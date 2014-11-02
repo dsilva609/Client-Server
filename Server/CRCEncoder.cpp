@@ -9,6 +9,7 @@ using namespace std;
 class CRCEncoder
 {
 public:
+	//public encode crc entry point
 	string EncodeCRC(string message)
 	{
 		string hash;
@@ -28,6 +29,7 @@ public:
 		return encodedMessage;
 	}
 
+	//public decode crc entry point
 	string DecodeCRC(string message)
 	{
 		string decodedMessage;
@@ -47,6 +49,7 @@ private:
 	string _padding = "0000000000000000";
 	string _divisor = CRCANSI;
 
+	//performs crc hash calculation for given string
 	string Calculate(string message)
 	{
 		string result = "";
@@ -105,6 +108,7 @@ private:
 		return result;
 	}
 
+	//converts given binary string to decimal
 	int BinaryToDecimal(string binary)
 	{
 		int num = 0;

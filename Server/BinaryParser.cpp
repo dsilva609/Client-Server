@@ -7,8 +7,8 @@
 #include "CRCEncoder.cpp"
 #include "HammingEncoder.cpp"
 
-using namespace boost;
 using namespace std;
+using namespace boost;
 
 #define SYN char(22)
 
@@ -21,6 +21,7 @@ struct CorruptFrame
 class BinaryParser
 {
 public:
+	//public parser entry point for encode and decode
 	vector<string> Parse(string filename, bool read)
 	{
 		Read(filename);
@@ -39,6 +40,7 @@ private:
 	CRCEncoder _crcEncoder;
 	HammingEncoder _hammingEncoder;
 
+	//reads in content of given file
 	void Read(string filename)
 	{
 		fstream stream;
@@ -61,6 +63,7 @@ private:
 			cout << "ERROR: Could not open file: " << filename << endl;
 	}
 
+	//converts given string to binary with options of parity or decimal conversion
 	string ConvertToBinary(string str, bool withParity, bool isInt = false)
 	{
 		string temp = "";
@@ -89,6 +92,7 @@ private:
 		return temp;
 	}
 
+	//determines odd parity for given binary string
 	char EvaluateParity(string binStr)
 	{
 		int numOnes = 0;
@@ -105,6 +109,7 @@ private:
 		return '0';
 	}
 
+	//encodes SYN, SYN, Length, and Message with hamming and CRC hash
 	void EncodeData()
 	{
 		string temp;
@@ -128,6 +133,7 @@ private:
 		}
 	}
 
+	//encodes individual bytes of given message to hamming
 	string EncodeBytesToHamming(string message)
 	{
 		string encodedHamming = "";
@@ -138,6 +144,7 @@ private:
 		return encodedHamming;
 	}
 
+	//decodes data back to original ASCII representation and determines which strings fail the CRC check
 	void DecodeData(vector<string> data)
 	{
 		string syn1;
@@ -226,6 +233,7 @@ private:
 			CorrectFrame(corruptFrames);
 	}
 
+	//decodes individual bytes of given message from hamming
 	string DecodeBytesFromHamming(string message)
 	{
 		string decodedHamming = "";
@@ -236,6 +244,7 @@ private:
 		return decodedHamming;
 	}
 
+	//corrects the bad bits of corrupt data using hamming bit correction
 	void CorrectFrame(vector<CorruptFrame> corruptData)
 	{
 		vector<string> correctedData;

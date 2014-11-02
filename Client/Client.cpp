@@ -13,6 +13,7 @@ using namespace std;
 class Client
 {
 public:
+	//public client entry point
 	void Start(string endPoint, string filename)
 	{
 		try
@@ -35,6 +36,7 @@ private:
 	tcp::resolver::iterator _endpoint_iterator;
 	tcp::socket *_socket;
 
+	//creates endpoint for client
 	void Create(string endPoint)
 	{
 		this->_resolver = new tcp::resolver(this->_IOService);
@@ -43,11 +45,11 @@ private:
 		this->_socket = new tcp::socket(this->_IOService);
 	}
 
+	//receives data from server
 	void Read(string filename)
 	{
 		string receivedData = "";
 		vector<string> data;
-
 
 		cout << "Reveiving data..." << endl;
 		for (;;)
@@ -80,10 +82,11 @@ private:
 		cout << "Connection to server closed." << endl;
 	}
 
+	//saves transmitted data from server to file
 	void SaveToFile(string filename, vector<string> receivedData)
 	{
 		ofstream stream;
-		
+
 		stream.open(filename);
 
 		if (stream.good())

@@ -8,6 +8,7 @@ using namespace std;
 class ErrorGenerator
 {
 public:
+	//performs error generation routines
 	vector<string> Execute(vector<string> data, int numFrames)
 	{
 		int genErrorFrameStartPos;
@@ -28,6 +29,7 @@ public:
 	}
 
 private:
+	//determines position where first error will begin
 	int DetermineFrameErrorStartPosition(int numFrames, int numDataElements)
 	{
 		int pos;
@@ -42,6 +44,7 @@ private:
 		return pos;
 	}
 
+	//generates error for a random number of bytes for a given string
 	string GenerateError(string message)
 	{
 		string controlLengthStr;
