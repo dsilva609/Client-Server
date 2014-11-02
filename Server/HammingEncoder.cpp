@@ -25,6 +25,10 @@ private:
 		int counter = 0;
 		string testStr = "";
 
+		int numSuccessful = 0;
+		int numUnsuccessful = 0;
+		int error = 0;
+
 		numPBits = floor(log2(message.length())) + 1;
 
 		if (encode)
@@ -38,47 +42,54 @@ private:
 
 		while (counter < numPBits)
 		{
-			//		cout << "counter is: " << counter << endl;
-			for (int i = pow(2, counter) - 1; i < encodedMessage.length(); i += pow(2, counter) * 2)
-			{
-				//	cout << "i is: " << i << endl;
-
-				if (i + pow(2, counter) > encodedMessage.length())
-				{
-					//cout << "checking: " << encodedMessage.substr(i) << endl;
-					testStr += encodedMessage.substr(i);
-				}
-				else
-				{
-					//	cout << "checking: " << encodedMessage.substr(i, pow(2, counter)) << endl;
-					testStr += encodedMessage.substr(i, pow(2, counter));
-				}
-			}
+			testStr = determineTestString(counter, encodedMessage);
 
 			if (encode)
 				encodedMessage[pow(2, counter) - 1] = determineParity(testStr);
 			else
 			{
 				if (encodedMessage[pow(2, counter) - 1] == determineParity(testStr.substr(1)))
-				{
-					cout << "check at " << pow(2, counter) - 1 << " successful" << endl;
-
-				}
+					numSuccessful++;
 				else
-					cout << "check failure at: " << pow(2, counter) - 1 << endl;
+				{
+					cout << "parity check failure at position: " << pow(2, counter) - 1 << endl;
+					numUnsuccessful++;
+					error += pow(2, counter);
+				}
 			}
 
 			testStr.clear();
 			counter++;
 		}
 
-		if (!encode)
+		if (!encode && numUnsuccessful != 0)
+		{
+			cout << "error detected at position: " << error - 1 << endl;
+			return "_" + to_string(error);
+		}
+
+		if (!encode && numUnsuccessful == 0)
 		{
 			for (int i = numPBits - 1; i >= 0; i--)
 				encodedMessage.erase(pow(2, i) - 1, 1);
 		}
 
 		return encodedMessage;
+	}
+
+	string determineTestString(int counter, string encodedMessage)
+	{
+		string testStr = "";
+
+		for (int i = pow(2, counter) - 1; i < encodedMessage.length(); i += pow(2, counter) * 2)
+		{
+
+			if (i + pow(2, counter) > encodedMessage.length())
+				testStr += encodedMessage.substr(i);
+			else
+				testStr += encodedMessage.substr(i, pow(2, counter));
+		}
+		return testStr;
 	}
 
 	char determineParity(string testStr)

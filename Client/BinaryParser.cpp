@@ -24,21 +24,9 @@ public:
 	vector<string> Parse(string filename, bool read)
 	{
 		Read(filename);
+
 		if (read)
-		{
 			DecodeData(this->_data);
-			//vector<CorruptFrame> data;
-			//CorruptFrame badframe;
-			////0001011000010110000000110000110000011101110000100010110100111010101110001000
-			////00010110 00010110 00000011 000011000001 110111000010 001011010011 1010101110001000
-			////test string 3 bytes 0001011000010110000000110000100000011101110100100010010100111010101110001000
-			//badframe.frameData = "0001011000010110000000110000110000011101110000110010110100111010101110001000";
-			//badframe.frameNum = 0;
-
-			//data.push_back(badframe);
-
-			//CorrectFrame(data);
-		}
 		else
 			EncodeData();
 
@@ -48,8 +36,8 @@ public:
 private:
 	vector<string> _data;
 	vector<string> _encodedData;
-	CRCEncoder _crcEncoder;//apply to entire frame
-	HammingEncoder _hammingEncoder;//apply only to message
+	CRCEncoder _crcEncoder;
+	HammingEncoder _hammingEncoder;
 
 	void Read(string filename)
 	{
@@ -113,6 +101,7 @@ private:
 
 		if (numOnes % 2 == 0)
 			return '1';
+
 		return '0';
 	}
 
@@ -126,20 +115,13 @@ private:
 			temp += ConvertToBinary(to_string(SYN), false, true);
 			temp += ConvertToBinary(to_string(SYN), false, true);
 
-			temp += ConvertToBinary(to_string(str.length()), false, true);//string is SYN SYN length
-			str = ConvertToBinary(str, true);//message string, do hamming encoding
+			temp += ConvertToBinary(to_string(str.length()), false, true);
 
-			//cout << "str before hamming:" << endl << str << endl;
+			str = ConvertToBinary(str, true);
+			str = EncodeBytesToHamming(str);
 
-			str = EncodeBytesToHamming(str);// this->_hammingEncoder.EncodeHamming(str);
-
-			//cout << "str after hamming:" << endl << str << endl;
 			temp += str;
-
-			// cout << "temp before crc encode: " << endl << temp << endl;
-
 			temp = this->_crcEncoder.EncodeCRC(temp);
-			//cout << "temp after crc encode: " << endl << temp << endl;
 
 			this->_encodedData.push_back(temp);
 			temp.clear();
@@ -151,13 +133,7 @@ private:
 		string encodedHamming = "";
 
 		for (int i = 0; i < message.length(); i += 8)
-		{
-			//	cout << "byte: " << message.substr(i, 8) << endl;
 			encodedHamming += this->_hammingEncoder.EncodeHamming(message.substr(i, 8));
-			//	cout << "hamm: " << this->_hammingEncoder.EncodeHamming(message.substr(i, 8)) << endl;
-			//	cout << "encoded hamming now: " << encodedHamming << endl;
-		}
-		//	cout << "encoded hamming now: " << encodedHamming << endl;
 
 		return encodedHamming;
 	}
@@ -189,8 +165,6 @@ private:
 			}
 			result = this->_crcEncoder.DecodeCRC(item);
 
-
-
 			if (result.length() != 0)
 			{
 				syn1 = result.substr(0, 8);
@@ -210,7 +184,6 @@ private:
 			}
 			else
 			{
-				//place corrupt string in error vector with count
 				cerr << "CRC check failure at frame: " << count << endl;
 
 				corruptData.frameData = item;
@@ -223,7 +196,6 @@ private:
 				continue;
 			}
 
-			//cout << "\t";
 			while ((pos / 8) < length)
 			{
 				for (int i = pos; i < pos + 8; i++)
@@ -259,37 +231,16 @@ private:
 		string decodedHamming = "";
 
 		for (int i = 0; i < message.length(); i += 12)
-		{
-			//	cout << "byte: " << message.substr(i, 8) << endl;
 			decodedHamming += this->_hammingEncoder.DecodeHamming(message.substr(i, 12));
-			//	cout << "hamm: " << this->_hammingEncoder.EncodeHamming(message.substr(i, 8)) << endl;
-			//	cout << "encoded hamming now: " << encodedHamming << endl;
-		}
-		//	cout << "encoded hamming now: " << encodedHamming << endl;
 
 		return decodedHamming;
 	}
 
 	void CorrectFrame(vector<CorruptFrame> corruptData)
 	{
-		cout << endl << "Performing error correction..." << endl;
-
-		/*
-		ALGORITHM
-
-		remove crc hash
-		remove SYN SYN
-		remove and store length
-		while bad bits
-		perform hamming decode and find error positions
-		add positions
-		flip ^ that bit
-		run hamming decode again
-
-
-		*/
 		vector<string> correctedData;
 
+		cout << endl << "Performing error correction..." << endl;
 
 		for each(auto item in corruptData)
 		{
@@ -301,15 +252,14 @@ private:
 			string message;
 			string correctedMessage = "";
 
-			//	cout << "item is: " << endl << item.frameData << endl;
 			cout << "Correcting frame: " << item.frameNum << endl;
+
 			crcHash = item.frameData.substr(item.frameData.length() - 16, 16);
 			item.frameData = item.frameData.substr(0, item.frameData.length() - 16);//remove crc
 			controlLengthStr = item.frameData.substr(0, 24);//save syn syn length
 
 			message = item.frameData.substr(24);//message
-			//	cout << "without crc, syn1, syn2, length: " << endl << message << endl;
-
+			
 			for (int i = 0; i < message.length(); i += 12)
 			{
 				string currentStr;
@@ -320,8 +270,7 @@ private:
 				if (temp[0] == '_')
 				{
 					errorLocations = (temp.substr(1));
-					//cout << "bad hamming bits: " << endl << errorLocations << endl;
-
+			
 					if (currentStr[stoi(errorLocations) - 1] == '1')
 						currentStr[stoi(errorLocations) - 1] = '0';
 					else
@@ -332,11 +281,10 @@ private:
 				errorLocations.clear();
 				temp.clear();
 			}
+			
 			correctedData.push_back(controlLengthStr + correctedMessage + crcHash);
-
 		}
-		//cout << correctedData.at(0) << endl;
-
+		
 		cout << endl << "Decoding corrected data..." << endl;
 		DecodeData(correctedData);
 	}

@@ -39,7 +39,6 @@ public:
 			decodedMessage = message.substr(0, message.length() - 16);
 		else
 			return "";
-		//	cerr << "CRC check failure!" << endl;
 
 		return decodedMessage;
 	}
@@ -68,9 +67,6 @@ private:
 				continue;
 			}
 
-			//cout << "current dividend: " << current << endl;
-
-
 			for (int j = 0; j < this->_divisor.length(); j++)
 			{
 				if ((current[j] == '1' && this->_divisor[j] == '1') || (current[j] == '0'&& this->_divisor[j] == '0'))
@@ -81,8 +77,6 @@ private:
 
 			next = result + message.substr(this->_divisor.size());
 
-			//	cout << "result: " << result << endl;
-
 			for (int k = 0; k < next.length(); k++)
 			{
 				if (next[k] == '1')
@@ -91,10 +85,8 @@ private:
 					break;
 				}
 			}
-			//	cout << "current now: " << next << endl;
 
 			message = next;
-
 
 			if (message.length() < this->_divisor.length())
 			{
@@ -110,19 +102,7 @@ private:
 			}
 		}
 
-		//cout << "final result: " << result << endl;
-
 		return result;
-		/*   ALGORITHM
-		while length of divisor < number
-
-		xor by divisor
-
-		shift to right by 1
-		if length is less than divisor starting with first 1
-		shift to right again
-
-		*/
 	}
 
 	int BinaryToDecimal(string binary)
