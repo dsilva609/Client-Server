@@ -45,6 +45,7 @@ private:
 	{
 		fstream stream;
 		string lineIn;
+		string temp;
 
 		stream.open(filename);
 
@@ -55,7 +56,18 @@ private:
 			{
 				getline(stream, lineIn);
 
-				this->_data.push_back(lineIn);
+				if (lineIn.length() > 64)
+				{
+					while (lineIn.length() > 64)
+					{
+						temp = lineIn.substr(0, 64);
+						this->_data.push_back(temp);
+						lineIn = lineIn.substr(64);
+					}
+					this->_data.push_back(lineIn);
+				}
+				else
+					this->_data.push_back(lineIn);
 			}
 			stream.close();
 		}
