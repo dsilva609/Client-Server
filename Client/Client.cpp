@@ -51,7 +51,7 @@ private:
 		string receivedData = "";
 		vector<string> data;
 
-		cout << "Reveiving data..." << endl;
+		cout << "Receiving data..." << endl;
 		for (;;)
 		{
 			boost::array<char, 20000> buf;
