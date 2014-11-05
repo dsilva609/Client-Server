@@ -24,7 +24,7 @@ public:
 	//public parser entry point for encode and decode
 	vector<string> Parse(string filename, bool read)
 	{
-		Read(filename);
+		Read(filename, read);
 
 		if (read)
 			DecodeData(this->_data);
@@ -41,7 +41,7 @@ private:
 	HammingEncoder _hammingEncoder;
 
 	//reads in content of given file
-	void Read(string filename)
+	void Read(string filename, bool read)
 	{
 		fstream stream;
 		string lineIn;
@@ -56,7 +56,7 @@ private:
 			{
 				getline(stream, lineIn);
 
-				if (lineIn.length() > 64)
+				if (!read && lineIn.length() > 64)
 				{
 					while (lineIn.length() > 64)
 					{
