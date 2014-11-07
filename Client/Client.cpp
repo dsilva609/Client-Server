@@ -40,7 +40,7 @@ private:
 	void Create(string endPoint)
 	{
 		this->_resolver = new tcp::resolver(this->_IOService);
-		this->_query = new tcp::resolver::query(endPoint, "daytime");
+		this->_query = new tcp::resolver::query(endPoint, "44300");
 		this->_endpoint_iterator = (*this->_resolver).resolve(*this->_query);
 		this->_socket = new tcp::socket(this->_IOService);
 	}

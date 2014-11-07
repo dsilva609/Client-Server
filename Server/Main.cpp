@@ -14,7 +14,7 @@ int main()
 	data = parser.Parse("data.txt", false);
 	data = generator.Execute(data, 5);
 
-	server.Start("127.0.0.1", "daytime", data);
+	server.Start("127.0.0.1", "44300", data);
 
 	exit(EXIT_SUCCESS);
 }
