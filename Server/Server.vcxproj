@@ -77,9 +77,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BinaryParser.cpp" />
-    <ClCompile Include="CRCEncoder.cpp" />
-    <ClCompile Include="ErrorGenerator.cpp" />
-    <ClCompile Include="HammingEncoder.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
