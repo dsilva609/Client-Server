@@ -29,6 +29,8 @@ private:
 
 	void EncodeToHDB3()
 	{
+		int numZeroes = 0;
+		int numPulseCharacters = 0;
 		/*for each  (auto item in this->_resultData)
 		{
 		cout << item << endl;
@@ -38,6 +40,29 @@ private:
 		cout << test << endl;
 		test = ConvertToAMI(test);
 		cout << test << endl;
+
+		for (int i = 0; i < test.length(); i++)
+		{
+			if (test[i] == '+' || test[i] == '-')
+				numPulseCharacters++;
+
+			cout << "i: " << i << endl;
+			if (test[i] == '0')
+			{
+				if (test.length() - i >= 4)
+				{
+					if (test.substr(i, 4) == "0000")
+					{
+						cout << test.substr(i, 4) << endl;
+
+						cout << "num pulse: " << numPulseCharacters << endl;
+
+						numPulseCharacters = 0;
+						i += 3;
+					}
+				}
+			}
+		}
 
 		/*
 			ALGORITHM
