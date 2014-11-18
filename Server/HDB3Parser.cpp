@@ -38,6 +38,22 @@ private:
 		cout << test << endl;
 		test = ConvertToAMI(test);
 		cout << test << endl;
+
+		/*
+			ALGORITHM
+			-as the iterator goes through the characters of the string
+			---count the number of + and - in the string (pulse counter)
+			---determine if that number is odd or even
+			---reset both after 4 zeroes are found
+
+			---count the number of zeroes
+			---when the number of zeroes reaches 4
+			---perform substitutions
+			---reset the number after substitution
+			---make sure to add the + or - from this substitution to pulse counter
+
+			---run through string again to make sure that there are no duplicate pulses ++ or --
+			*/
 	}
 
 	string ConvertToAMI(string binaryStr)
