@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <string>
 #include <vector>
 #include <boost/foreach.hpp>
@@ -160,7 +160,7 @@ private:
 
 			Get the signal
 			Convert it to Alternate Mark Inversion (AMI) form
-			Look for 4 consecutive zeros and replace them with either 000V or B00V, Rule: If number of + and – at the left hand site of the consecutive 4 zeros is odd then use B00V else 000V
+			Look for 4 consecutive zeros and replace them with either 000V or B00V, Rule: If number of + and ï¿½ at the left hand site of the consecutive 4 zeros is odd then use B00V else 000V
 			If it is 000V then V polarity should be as same as the polarity of the preceding pulse of those 4 consecutive zeros. If it is B00V, B and V are in same polarity but opposite to the preceding pulse of those 4 consecutive zeros.
 			Examples:
 
@@ -208,7 +208,45 @@ private:
 
 	void DecodeFromHDB3()
 	{
-		string test = "+0?000–+000+?+–00–+–+000+–+–+–00–+0–+00+";
-		cout << "Does nothing yet" << endl;
+		//			  "1010000100001100001110000111100001010000"
+		//	string test = "+0-000-+000+-+-00-+-+000+-+-+-00-+0-+00+";
+
+		//			  "1010000011000011000000"
+		//string test = "+0-000-0+-+00+-+-00-00";
+
+		//			  "1100000000110000010"
+		//string test = "+-000-+00+-+-00-0+0";
+
+		//			  "101000000000010"
+		string test = "+0-000-+00+00-0";
+
+		for (int i = 0; i < test.length(); i++)
+		{
+			if (test[i] == '+' || test[i] == '-')
+			{
+				if (test.substr(i, 4) != "+00+" && test.substr(i, 4) != "-00-")
+					test[i] = '1';
+				else
+				{
+					if (test.length() - i >= 4 && (test[i] == '+' && test.substr(i, 4) == "+00+") || test[i] == '-' && test.substr(i, 4) == "-00-")
+					{
+						test.replace(i, 4, "0000");
+						i += 3;
+					}
+
+
+				}
+			}
+			else if (test[i] == '0')
+			{
+				if (test.length() - i >= 4 && (test.substr(i, 4) == "000+" || test.substr(i, 4) == "000-"))
+				{
+					test.replace(i, 4, "0000");
+					i += 3;
+				}
+			}
+
+			cout << "test is now: " << test << endl;
+		}
 	}
 };
