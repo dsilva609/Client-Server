@@ -78,9 +78,11 @@
   <ItemGroup>
     <ClCompile Include="BinaryParser.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="HDB3Parser.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="ConvertedFromHDB3.txt" />
     <Text Include="TransmittedData.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
