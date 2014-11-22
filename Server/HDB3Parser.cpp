@@ -37,10 +37,13 @@ private:
 		cout << item << endl;
 		}*/
 
-		string test = "101000000000010";
+		string test = "1010000100001100001110000111100001010000";
 		cout << test << endl;
 		test = ConvertToAMI(test);
 		cout << test << endl;
+		int first;
+		bool hasOnesViolation = false;
+		//int third;
 
 		for (int i = 0; i < test.length(); i++)
 		{
@@ -94,26 +97,54 @@ private:
 							//test.substr(i, 4) = "000V";
 							numPulseCharacters = 1;
 						}
-						cout << "num pulse: " << numPulseCharacters << endl;
+
+
+						//cout << "num pulse: " << numPulseCharacters << endl;
 
 						//numPulseCharacters = 0;
 						i += 3;
+						first = i + 1;
+						//third = first + 3;
+						bool tempPulseBool = prevPulseWasPositive;
+
+						for (first; first < test.length(); first++)//flip ones bits if previous substitution pulse is the same as first one bit that follows
+						{
+							if (!hasOnesViolation && prevPulseWasPositive && test[first] == '+')
+							{
+								//test[first] = '-';
+								cout << "has ones violation" << endl;
+								hasOnesViolation = true;
+								break;
+							}
+							else if (!hasOnesViolation && !prevPulseWasPositive && test[first] == '-')
+							{
+								//test[first] = '+';
+								hasOnesViolation = true;
+								break;
+							}
+						}
+						/*if (hasOnesViolation)
+						{
+						for (first; first < test.length(); first++)
+						{
+
+						if (prevPulseWasPositive && test[first] == '+')
+						{
+						test[first] = '-';
+						prevPulseWasPositive = false;
+						}
+						else if (!prevPulseWasPositive && test[first] == '-')
+						{
+						test[first] = '+';
+						prevPulseWasPositive = true;
+						}
+
+						}
+						}*/
+						prevPulseWasPositive = tempPulseBool;
 					}
 				}
 			}
-			/*else if (test[i] == '+' && prevPulseWasPositive && i != 0)
-			{
-			test[i] = '-';
-			prevPulseWasPositive = false;
-			}
-			else if (test[i] == '-' && !prevPulseWasPositive && i != 0)
-			{
-			test[i] = '+';
-			prevPulseWasPositive = true;
-			}
-			*/
-
-
 		}
 
 		cout << "test is now: " << test << endl;
