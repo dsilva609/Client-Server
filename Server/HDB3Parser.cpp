@@ -37,12 +37,13 @@ private:
 		cout << item << endl;
 		}*/
 
-		string test = "1010000100001100001110000111100001010000";
+		string test = "11000011";
 		cout << test << endl;
 		test = ConvertToAMI(test);
 		cout << test << endl;
 		int first;
-		bool hasOnesViolation = false;
+		bool isAfterFirstViolation = false;
+		//	bool hasOnesViolation = false;
 		//int third;
 
 		for (int i = 0; i < test.length(); i++)
@@ -65,6 +66,11 @@ private:
 				{
 					if (test.substr(i, 4) == "0000") //change this substring to a violation string variable
 					{
+						if (!isAfterFirstViolation)
+						{
+							numPulseCharacters = 0;
+							isAfterFirstViolation = true;
+						}
 						cout << test.substr(i, 4) << endl;
 
 						if (isOdd(numPulseCharacters))
@@ -79,68 +85,54 @@ private:
 								test.replace(i, 4, "+00+");
 								prevPulseWasPositive = true;
 							}
-							//test.replace(i, 4, "B00V");
-
-							//test.substr(i, 4) = "B00V";
 							numPulseCharacters = 1;
 						}
 						else
 						{
 							if (prevPulseWasPositive)
 							{
-								test.replace(i, 4, "000+");//does prevPulseWasPositive need to be updated?
+								test.replace(i, 4, "000+");
 							}
 							else
 							{
 								test.replace(i, 4, "000-");
 							}
-							//test.substr(i, 4) = "000V";
+
 							numPulseCharacters = 1;
 						}
 
 
-						//cout << "num pulse: " << numPulseCharacters << endl;
-
-						//numPulseCharacters = 0;
 						i += 3;
 						first = i + 1;
-						//third = first + 3;
-						bool tempPulseBool = prevPulseWasPositive;
 
+						bool tempPulseBool = prevPulseWasPositive;
+						char temp;
+						int numAmiViolations = 0;
 						for (first; first < test.length(); first++)//flip ones bits if previous substitution pulse is the same as first one bit that follows
 						{
-							if (!hasOnesViolation && prevPulseWasPositive && test[first] == '+')
+							temp = test[first];
+							if (prevPulseWasPositive && test[first] == '+')
 							{
-								//test[first] = '-';
+								test[first] = '-';
 								cout << "has ones violation" << endl;
-								hasOnesViolation = true;
-								break;
+								prevPulseWasPositive = false;
+								numAmiViolations++;
+								//hasOnesViolation = true;
+								//			break;
 							}
-							else if (!hasOnesViolation && !prevPulseWasPositive && test[first] == '-')
+							else if (!prevPulseWasPositive && test[first] == '-')
 							{
-								//test[first] = '+';
-								hasOnesViolation = true;
-								break;
+								test[first] = '+';
+								prevPulseWasPositive = true;
+								numAmiViolations++;
+								//hasOnesViolation = true;
+								//	break;
 							}
+							else if (prevPulseWasPositive && test[first] == '-')
+								prevPulseWasPositive = false;
+							else if (!prevPulseWasPositive && test[first] == '+')
+								prevPulseWasPositive = true;
 						}
-						/*if (hasOnesViolation)
-						{
-						for (first; first < test.length(); first++)
-						{
-
-						if (prevPulseWasPositive && test[first] == '+')
-						{
-						test[first] = '-';
-						prevPulseWasPositive = false;
-						}
-						else if (!prevPulseWasPositive && test[first] == '-')
-						{
-						test[first] = '+';
-						prevPulseWasPositive = true;
-						}
-
-						}
-						}*/
 						prevPulseWasPositive = tempPulseBool;
 					}
 				}
@@ -216,6 +208,7 @@ private:
 
 	void DecodeFromHDB3()
 	{
+		string test = "+0?000–+000+?+–00–+–+000+–+–+–00–+0–+00+";
 		cout << "Does nothing yet" << endl;
 	}
 };
