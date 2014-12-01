@@ -9,7 +9,7 @@ using namespace std;
 class HDB3Parser
 {
 public:
-	//public entry point for parser
+	//public entry point for encode
 	vector<string> Encode(vector<string> data)
 	{
 		for each (auto item in data)
