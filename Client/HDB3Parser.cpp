@@ -9,6 +9,7 @@ using namespace std;
 class HDB3Parser
 {
 public:
+	//public entry point for parser
 	vector<string> Encode(vector<string> data)
 	{
 		for each (auto item in data)
@@ -17,6 +18,7 @@ public:
 		return this->_convertedData;
 	}
 
+	//public entry point for decode
 	vector<string> Decode(string readFilename, string writeFilename)
 	{
 		ReadWrite(readFilename, true);
@@ -33,6 +35,7 @@ private:
 	vector<string> _data;
 	vector<string> _convertedData;
 
+	//reads or writes to a file
 	void ReadWrite(string filename, bool read)
 	{
 		fstream stream;
@@ -69,6 +72,7 @@ private:
 			cout << "ERROR: Could not open file: " << filename << endl;
 	}
 
+	//encodes given string to HDB3
 	string EncodeToHDB3(string item)
 	{
 		int numZeroes = 0;
@@ -130,6 +134,7 @@ private:
 		return item;
 	}
 
+	//converts given string to AMI
 	string ConvertToAMI(string binaryStr, bool prevPulseWasPositive)
 	{
 		for (int i = 0; i < binaryStr.length(); i++)
@@ -148,6 +153,7 @@ private:
 		return binaryStr;
 	}
 
+	//checks for AMI violations in given string and corrects them
 	string CheckForAMIViolations(string item, int currentIndex, bool prevPulseWasPositive)
 	{
 		int first = currentIndex + 1;
@@ -176,6 +182,7 @@ private:
 		return item;
 	}
 
+	//determines if given number is odd
 	bool isOdd(int num)
 	{
 		if (num % 2 == 1)
@@ -183,6 +190,7 @@ private:
 		return false;
 	}
 
+	//decodes given string from HDB3 to binary string
 	string DecodeFromHDB3(string item)
 	{
 		bool prevPulseWasPositive = false;
